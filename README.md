@@ -11,3 +11,5 @@ A simple learning management system for tutorials and courses.
 
 ## Env
 Both `frontend/` and `backend/` include a `.env.example` file for local configuration.
+Copy these to `.env` in each folder and tweak values as needed.
+You can usually keep the default local URLs and just adjust `DB_URI` if your Mongo setup differs.
