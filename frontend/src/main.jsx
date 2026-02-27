@@ -1,10 +1,20 @@
-import { StrictMode } from 'react'
+import React from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import { BrowserRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import axios from 'axios'
 import App from './App.jsx'
+import { store } from './redux/store'
+import './index.css'
+
+axios.defaults.withCredentials = true
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+  <React.StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>,
 )
