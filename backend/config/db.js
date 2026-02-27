@@ -1,11 +1,13 @@
 import mongoose from 'mongoose'
 
 export async function connectDb() {
-  const uri = process.env.MONGO_URL
+  const uri = process.env.DB_URI || process.env.MONGO_URL
+
   if (!uri) {
-    console.warn('MONGO_URL not set; skipping DB connect')
+    console.warn('DB_URI missing, skipping DB connect for now')
     return
   }
+
   try {
     await mongoose.connect(uri)
     console.log('MongoDB connected')
