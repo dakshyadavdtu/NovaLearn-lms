@@ -13,12 +13,12 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+
+const FRONTEND_ORIGIN = process.env.FRONTEND_URL || 'http://localhost:5173'
+
 app.use(
   cors({
-    origin:
-      process.env.FRONTEND_URL ||
-      process.env.CORS_ORIGIN ||
-      'http://localhost:5173',
+    origin: FRONTEND_ORIGIN,
     credentials: true,
   }),
 )
