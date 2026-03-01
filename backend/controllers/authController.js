@@ -5,12 +5,12 @@ import { signToken } from '../utils/jwt.js'
 const COOKIE_NAME = 'token'
 const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000 // 7 days
 
-// Intentional: sameSite none + secure breaks localhost (cookie not stored)
+const isProd = process.env.NODE_ENV === 'production'
 const cookieOptions = {
   httpOnly: true,
   maxAge: COOKIE_MAX_AGE,
-  sameSite: 'none',
-  secure: true,
+  secure: isProd,
+  sameSite: isProd ? 'none' : 'lax',
 }
 
 function toSafeUser(user) {
