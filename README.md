@@ -9,6 +9,9 @@ A simple learning management system for tutorials and courses.
 - backend: `cd backend`, install dependencies, run the dev server
 - frontend: `cd frontend`, install dependencies, run the dev server
 
+## Auth
+Signup, login, and logout are wired up; auth uses cookies (httpOnly). The backend expects `JWT_SECRET` in its env (see backend `.env.example`). Without it, token signing falls back to a dev-only default.
+
 ## Env
 Both `frontend/` and `backend/` include a `.env.example` file for local configuration.
 Copy these to `.env` in each folder and tweak values as needed.
