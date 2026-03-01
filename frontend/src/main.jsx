@@ -7,8 +7,6 @@ import App from './App.jsx'
 import { store } from './redux/store'
 import './index.css'
 
-axios.defaults.withCredentials = true
-
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
