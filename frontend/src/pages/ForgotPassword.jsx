@@ -1,6 +1,11 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { sendForgotOtp } from '../api/auth'
+import {
+  sendForgotOtp,
+  verifyForgotOtp,
+  resetForgotPassword,
+} from '../api/auth'
 
 function ForgotPassword() {
   const [step, setStep] = useState(1)
@@ -9,6 +14,8 @@ function ForgotPassword() {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const navigate = useNavigate()
 
   async function handleNext() {
     if (step === 1) {
@@ -30,7 +37,51 @@ function ForgotPassword() {
       }
       return
     }
-    setStep((s) => Math.min(3, s + 1))
+    if (step === 2) {
+      const code = String(otp).trim()
+      if (!/^\d{6}$/.test(code)) {
+        toast.error('Enter the 6-digit code')
+        return
+      }
+      setLoading(true)
+      try {
+        await verifyForgotOtp(email, code)
+        toast.success('Code verified')
+        setStep(3)
+      } catch (err) {
+        const msg = err.response?.data?.error || 'Could not verify code'
+        toast.error(msg)
+      } finally {
+        setLoading(false)
+      }
+      return
+    }
+    if (step === 3) {
+      const code = String(otp).trim()
+      if (!/^\d{6}$/.test(code)) {
+        toast.error('Enter the 6-digit code')
+        return
+      }
+      if (!newPassword || newPassword.length < 6) {
+        toast.error('Password must be at least 6 characters')
+        return
+      }
+      if (newPassword !== confirmPassword) {
+        toast.error('Passwords do not match')
+        return
+      }
+      setLoading(true)
+      try {
+        await resetForgotPassword({ email, otp: code, newPassword })
+        toast.success('Password reset, please sign in')
+        navigate('/login')
+      } catch (err) {
+        const msg = err.response?.data?.error || 'Could not reset password'
+        toast.error(msg)
+      } finally {
+        setLoading(false)
+      }
+    }
   }
 
   return (
@@ -64,7 +115,7 @@ function ForgotPassword() {
             <input
               type="text"
               value={otp}
-              onChange={(e) => setOtp(e.target.value)}
+              onChange={(e) => setOtp(Number(e.target.value))}
               className="w-full border border-slate-300 rounded px-3 py-2"
               disabled={loading}
             />

@@ -31,3 +31,17 @@ export async function sendForgotOtp(email) {
   const { data } = await api.post('/auth/forgot/send-otp', { email })
   return data
 }
+
+export async function verifyForgotOtp(email, otp) {
+  const { data } = await api.post('/auth/forgot/verify', { email, otp })
+  return data
+}
+
+export async function resetForgotPassword({ email, otp, newPassword }) {
+  const { data } = await api.post('/auth/forgot/reset', {
+    email,
+    otp,
+    newPassword,
+  })
+  return data
+}
