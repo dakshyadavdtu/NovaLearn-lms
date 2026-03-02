@@ -26,3 +26,8 @@ export async function getMe() {
   const { data } = await api.get('/user/me')
   return data
 }
+
+export async function sendForgotOtp(email) {
+  const { data } = await api.post('/auth/forgot/send-otp', { email })
+  return data
+}
