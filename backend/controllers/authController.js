@@ -88,7 +88,10 @@ export async function sendForgotOtp(req, res) {
       return res.status(404).json({ error: 'User not found' })
     }
     const latestOtp = await Otp.findOne({ email }).sort({ createdAt: -1 })
-    if (latestOtp && Date.now() - latestOtp.createdAt.getTime()) {
+    if (
+      latestOtp &&
+      Date.now() - latestOtp.createdAt.getTime() < 60 * 1000
+    ) {
       return res
         .status(429)
         .json({ error: 'Please wait before requesting another code' })
