@@ -34,8 +34,22 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<ProtectedRoute><Home apiBase={API_BASE} /></ProtectedRoute>} />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home apiBase={API_BASE} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <ProtectedRoute>
+              <Login />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>

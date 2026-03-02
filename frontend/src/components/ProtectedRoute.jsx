@@ -6,7 +6,11 @@ export default function ProtectedRoute({ children }) {
   const loading = useSelector((state) => state.user?.loading)
 
   if (loading) {
-    return <div className="p-4">loading...</div>
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="p-4 text-slate-800">Loading...</div>
+      </div>
+    )
   }
   if (!user) {
     return <Navigate to="/login" replace />
