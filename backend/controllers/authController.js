@@ -1,6 +1,9 @@
 import User from '../models/User.js'
+import Otp from '../models/Otp.js'
 import bcrypt from 'bcrypt'
 import { signToken } from '../utils/jwt.js'
+import { generateOtp } from '../utils/otp.js'
+import { sendOtpMail } from '../utils/mailer.js'
 
 const COOKIE_NAME = 'token'
 const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000 // 7 days
@@ -72,4 +75,24 @@ export async function login(req, res) {
 export async function logout(req, res) {
   res.clearCookie(COOKIE_NAME, cookieOptions)
   return res.json({ ok: true })
+}
+
+export async function sendForgotOtp(req, res) {
+  try {
+    const { email } = req.body
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' })
+    }
+    const user = await User.findOne({ email })
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+    const otp = generateOtp()
+    const expiresAt = Date.now() + 10 * 60 * 1000
+    await Otp.create({ email, otp, expiresAt })
+    await sendOtpMail(email, otp)
+    return res.json({ ok: true, message: 'OTP sent' })
+  } catch (err) {
+    return res.status(500).json({ error: 'Could not send OTP' })
+  }
 }
