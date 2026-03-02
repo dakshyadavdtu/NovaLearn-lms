@@ -88,7 +88,7 @@ export async function sendForgotOtp(req, res) {
       return res.status(404).json({ error: 'User not found' })
     }
     const otp = generateOtp()
-    const expiresAt = Date.now() + 10 * 60 * 1000
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
     await Otp.create({ email, otp, expiresAt })
     await sendOtpMail(email, otp)
     return res.json({ ok: true, message: 'OTP sent' })
@@ -116,7 +116,7 @@ export async function verifyForgotOtp(req, res) {
     if (!record || record.otp !== otp) {
       return res.status(400).json({ ok: false, error: 'Invalid OTP' })
     }
-    if (record.expiresAt < Date.now()) {
+    if (record.expiresAt && Date.now() > record.expiresAt.getTime()) {
       return res.status(400).json({ ok: false, error: 'Expired OTP' })
     }
     return res.json({ ok: true })
@@ -143,7 +143,7 @@ export async function resetForgotPassword(req, res) {
     if (!record || record.otp !== otp) {
       return res.status(400).json({ ok: false, error: 'Invalid OTP' })
     }
-    if (record.expiresAt < Date.now()) {
+    if (record.expiresAt && Date.now() > record.expiresAt.getTime()) {
       return res.status(400).json({ ok: false, error: 'Expired OTP' })
     }
     user.password = newPassword
