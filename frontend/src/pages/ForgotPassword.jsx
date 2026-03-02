@@ -115,7 +115,9 @@ function ForgotPassword() {
             <input
               type="text"
               value={otp}
-              onChange={(e) => setOtp(Number(e.target.value))}
+              onChange={(e) =>
+                setOtp(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))
+              }
               className="w-full border border-slate-300 rounded px-3 py-2"
               disabled={loading}
             />
