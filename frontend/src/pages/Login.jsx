@@ -89,6 +89,11 @@ function Login() {
             Sign up
           </Link>
         </p>
+        <p className="text-sm text-slate-600">
+          <Link to="/forgot-password" className="text-slate-800 underline">
+            Forgot password?
+          </Link>
+        </p>
       </form>
     </main>
   )

@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
+import ForgotPassword from './pages/ForgotPassword.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import { API_BASE } from './config.js'
 import { setUser, clearUser, setAuthLoading } from './redux/userSlice'
@@ -36,6 +37,7 @@ function App() {
         <Route path="/" element={<ProtectedRoute><Home apiBase={API_BASE} /></ProtectedRoute>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
       <ToastContainer position="top-right" theme="colored" />
     </>
