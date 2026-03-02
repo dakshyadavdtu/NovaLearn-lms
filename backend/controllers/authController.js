@@ -87,6 +87,13 @@ export async function sendForgotOtp(req, res) {
     if (!user) {
       return res.status(404).json({ error: 'User not found' })
     }
+    const latestOtp = await Otp.findOne({ email }).sort({ createdAt: -1 })
+    if (latestOtp && Date.now() - latestOtp.createdAt.getTime()) {
+      return res
+        .status(429)
+        .json({ error: 'Please wait before requesting another code' })
+    }
+    await Otp.deleteMany({ email })
     const otp = generateOtp()
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
     await Otp.create({ email, otp, expiresAt })
