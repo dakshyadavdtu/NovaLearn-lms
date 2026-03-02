@@ -93,6 +93,9 @@ export async function sendForgotOtp(req, res) {
     await sendOtpMail(email, otp)
     return res.json({ ok: true, message: 'OTP sent' })
   } catch (err) {
+    if (err && err.message === 'Email service not configured') {
+      return res.status(500).json({ error: 'Email service not configured' })
+    }
     return res.status(500).json({ error: 'Could not send OTP' })
   }
 }
