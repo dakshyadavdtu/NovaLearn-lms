@@ -99,3 +99,30 @@ export async function sendForgotOtp(req, res) {
     return res.status(500).json({ error: 'Could not send OTP' })
   }
 }
+
+export async function verifyForgotOtp(req, res) {
+  try {
+    const { email, otp } = req.body
+    if (!email || !otp) {
+      return res
+        .status(400)
+        .json({ ok: false, error: 'Email and OTP are required' })
+    }
+    const user = await User.findOne({ email })
+    if (!user) {
+      return res.status(404).json({ ok: false, error: 'User not found' })
+    }
+    const record = await Otp.findOne({ email }).sort({ createdAt: -1 })
+    if (!record || record.otp !== otp) {
+      return res.status(400).json({ ok: false, error: 'Invalid OTP' })
+    }
+    if (record.expiresAt < Date.now()) {
+      return res.status(400).json({ ok: false, error: 'Expired OTP' })
+    }
+    return res.json({ ok: true })
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ ok: false, error: 'Could not verify OTP' })
+  }
+}
