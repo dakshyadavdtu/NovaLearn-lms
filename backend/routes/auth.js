@@ -5,6 +5,7 @@ import {
   logout,
   sendForgotOtp,
   verifyForgotOtp,
+  resetForgotPassword,
 } from '../controllers/authController.js'
 
 const router = Router()
@@ -18,5 +19,6 @@ router.post('/login', login)
 router.post('/logout', logout)
 router.post('/forgot/send-otp', sendForgotOtp)
 router.post('/forgot/verify', verifyForgotOtp)
+router.post('/forgot/reset', resetForgotPassword)
 
 export default router

@@ -126,3 +126,33 @@ export async function verifyForgotOtp(req, res) {
       .json({ ok: false, error: 'Could not verify OTP' })
   }
 }
+
+export async function resetForgotPassword(req, res) {
+  try {
+    const { email, otp, newPassword } = req.body
+    if (!email || !otp || !validPassword(newPassword)) {
+      return res
+        .status(400)
+        .json({ ok: false, error: 'Email, OTP and valid password are required' })
+    }
+    const user = await User.findOne({ email })
+    if (!user) {
+      return res.status(404).json({ ok: false, error: 'User not found' })
+    }
+    const record = await Otp.findOne({ email }).sort({ createdAt: -1 })
+    if (!record || record.otp !== otp) {
+      return res.status(400).json({ ok: false, error: 'Invalid OTP' })
+    }
+    if (record.expiresAt < Date.now()) {
+      return res.status(400).json({ ok: false, error: 'Expired OTP' })
+    }
+    user.password = newPassword
+    await user.save()
+    await Otp.deleteMany({ email })
+    return res.json({ ok: true })
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ ok: false, error: 'Could not reset password' })
+  }
+}
