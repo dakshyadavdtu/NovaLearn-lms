@@ -12,6 +12,8 @@ A simple learning management system for tutorials and courses.
 ## Auth
 Signup, login, and logout are wired up; auth uses cookies (httpOnly). The backend expects `JWT_SECRET` in its env (see backend `.env.example`). Without it, token signing falls back to a dev-only default.
 
+The password reset flow uses email OTPs. To send emails in non-dev setups, configure the backend SMTP env vars (see `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, optionally `SMTP_FROM`) before starting the API.
+
 ## Env
 Both `frontend/` and `backend/` include a `.env.example` file for local configuration.
 Copy these to `.env` in each folder and tweak values as needed.
