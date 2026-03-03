@@ -7,6 +7,10 @@ import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
+import Dashboard from './pages/educator/Dashboard.jsx'
+import MyCourses from './pages/educator/MyCourses.jsx'
+import CreateCourse from './pages/educator/CreateCourse.jsx'
+import EditCourse from './pages/educator/EditCourse.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import { API_BASE } from './config.js'
 import { setUser, clearUser, setAuthLoading } from './redux/userSlice'
@@ -45,6 +49,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/educator" element={<Dashboard />} />
+        <Route path="/educator/courses" element={<MyCourses />} />
+        <Route path="/educator/courses/new" element={<CreateCourse />} />
+        <Route path="/educator/courses/:id/edit" element={<EditCourse />} />
       </Routes>
       <ToastContainer position="top-right" theme="colored" />
     </>
