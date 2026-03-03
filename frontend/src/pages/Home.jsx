@@ -53,6 +53,11 @@ function Home({ apiBase }) {
       {user ? (
         <div className="flex flex-col items-center gap-2">
           <p className="text-slate-700">Logged in as <span className="font-medium">{user.name}</span></p>
+          {user.role === 'educator' && (
+            <Link to="/educator" className="px-4 py-2 bg-indigo-600 text-white rounded text-sm">
+              Educator Dashboard
+            </Link>
+          )}
           <button
             type="button"
             onClick={handleLogout}

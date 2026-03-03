@@ -12,6 +12,7 @@ import MyCourses from './pages/educator/MyCourses.jsx'
 import CreateCourse from './pages/educator/CreateCourse.jsx'
 import EditCourse from './pages/educator/EditCourse.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
+import EducatorRoute from './components/EducatorRoute.jsx'
 import { API_BASE } from './config.js'
 import { setUser, clearUser, setAuthLoading } from './redux/userSlice'
 import { getMe } from './api/auth'
@@ -46,13 +47,13 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<EducatorRoute><Login /></EducatorRoute>} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/educator" element={<Dashboard />} />
-        <Route path="/educator/courses" element={<MyCourses />} />
-        <Route path="/educator/courses/new" element={<CreateCourse />} />
-        <Route path="/educator/courses/:id/edit" element={<EditCourse />} />
+        <Route path="/educator" element={<EducatorRoute><Dashboard /></EducatorRoute>} />
+        <Route path="/educator/courses" element={<EducatorRoute><MyCourses /></EducatorRoute>} />
+        <Route path="/educator/courses/new" element={<EducatorRoute><CreateCourse /></EducatorRoute>} />
+        <Route path="/educator/courses/:id/edit" element={<EducatorRoute><EditCourse /></EducatorRoute>} />
       </Routes>
       <ToastContainer position="top-right" theme="colored" />
     </>

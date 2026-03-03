@@ -12,7 +12,11 @@ export default function EducatorRoute({ children }) {
       </div>
     )
   }
-  if (!user) return <Navigate to="/login" replace />
-  if (user.role !== 'educator') return <Navigate to="/" replace />
+  if (!user) {
+    return <Navigate to="/login" replace />
+  }
+  if (user.role !== 'educator') {
+    return <Navigate to="/" replace />
+  }
   return children
 }
