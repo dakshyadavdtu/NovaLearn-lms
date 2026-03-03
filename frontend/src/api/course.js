@@ -34,12 +34,22 @@ export async function createCourse(payload) {
 
 export async function updateCourse(id, payload) {
   const form = new FormData()
-  form.append('title', payload.title ?? '')
-  form.append('description', payload.description ?? '')
-  form.append('isPublished', payload.isPublished === true)
+  if (payload.title !== undefined && String(payload.title).trim() !== '') {
+    form.append('title', String(payload.title).trim())
+  }
+  if (payload.description !== undefined) {
+    form.append('description', String(payload.description))
+  }
+  if (typeof payload.isPublished === 'boolean') {
+    form.append('isPublished', payload.isPublished)
+  }
   if (payload.thumbnailFile) form.append('thumbnail', payload.thumbnailFile)
   const { data } = await api.patch(`/course/${id}`, form, {
     headers: { 'Content-Type': undefined },
   })
   return data
+}
+
+export async function deleteCourse(id) {
+  await api.delete(`/course/${id}`)
 }

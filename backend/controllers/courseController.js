@@ -65,8 +65,8 @@ export async function updateCourse(req, res) {
     if (description !== undefined) {
       course.description = String(description).trim()
     }
-    if (typeof isPublished === 'boolean') {
-      course.isPublished = isPublished
+    if (isPublished !== undefined) {
+      course.isPublished = isPublished === true || isPublished === 'true'
     }
     await course.save()
     return res.json(course)

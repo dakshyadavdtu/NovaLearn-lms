@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getMyCourses } from '../../api/course.js'
+import { toast } from 'react-toastify'
+import { getMyCourses, deleteCourse } from '../../api/course.js'
 
 export default function MyCourses() {
   const [courses, setCourses] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
+  function loadCourses() {
+    setLoading(true)
+    setError(null)
     getMyCourses()
       .then((data) => {
         const list = Array.isArray(data) ? data : (data?.courses || [])
@@ -17,7 +20,24 @@ export default function MyCourses() {
         setError(err.response?.data?.error || 'Failed to load courses')
       })
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    loadCourses()
   }, [])
+
+  async function handleDelete(e, courseId) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!window.confirm('Delete this course?')) return
+    try {
+      await deleteCourse(courseId)
+      setCourses((prev) => (prev || []).filter((c) => c._id !== courseId))
+      toast.success('Course deleted')
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to delete course')
+    }
+  }
 
   if (loading) {
     return (
@@ -63,12 +83,21 @@ export default function MyCourses() {
                 <p className="mt-1 text-sm text-slate-600 line-clamp-1">{c.description}</p>
               )}
             </div>
-            <Link
-              to={`/educator/courses/${c._id}/edit`}
-              className="text-sm text-indigo-600 hover:underline"
-            >
-              Edit
-            </Link>
+            <div className="flex items-center gap-2 shrink-0">
+              <Link
+                to={`/educator/courses/${c._id}/edit`}
+                className="text-sm text-indigo-600 hover:underline"
+              >
+                Edit
+              </Link>
+              <button
+                type="button"
+                onClick={(e) => handleDelete(e, c._id)}
+                className="text-sm text-red-600 hover:underline"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>
