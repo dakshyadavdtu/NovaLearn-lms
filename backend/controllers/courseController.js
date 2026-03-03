@@ -59,10 +59,15 @@ export async function updateCourse(req, res) {
       const result = await uploadImage(req.file.buffer)
       if (result?.secure_url) course.thumbnail = result.secure_url
     }
-    // Intentional regression for Phase 3: direct assignment can overwrite fields with undefined
-    course.title = title
-    course.description = description
-    course.isPublished = isPublished
+    if (title !== undefined) {
+      course.title = String(title).trim()
+    }
+    if (description !== undefined) {
+      course.description = String(description).trim()
+    }
+    if (typeof isPublished === 'boolean') {
+      course.isPublished = isPublished
+    }
     await course.save()
     return res.json(course)
   } catch (err) {
