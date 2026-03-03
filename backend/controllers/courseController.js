@@ -17,6 +17,15 @@ export async function createCourse(req, res) {
   }
 }
 
+export async function getMyCourses(req, res) {
+  try {
+    const courses = await Course.find({ creator: req.user }).sort({ updatedAt: -1 })
+    return res.json(courses)
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to get courses' })
+  }
+}
+
 export async function getCourseById(req, res) {
   try {
     const course = await Course.findById(req.params.id).populate('creator', 'name email')
