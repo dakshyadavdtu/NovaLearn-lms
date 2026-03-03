@@ -12,21 +12,33 @@ export default function CreateCourse() {
   const [price, setPrice] = useState('')
   const [isPublished, setIsPublished] = useState(false)
   const [thumbnail, setThumbnail] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   async function handleSubmit(e) {
     e.preventDefault()
     if (!title?.trim()) return
-    await createCourse({
-      title: title.trim(),
-      description: description.trim() || undefined,
-      category: category.trim() || undefined,
-      level: level || undefined,
-      price: price === '' ? undefined : price,
-      isPublished,
-      thumbnailFile: thumbnail ?? undefined,
-    })
-    toast.success('Course created')
-    navigate('/educator/courses')
+    setLoading(true)
+    setError(null)
+    try {
+      await createCourse({
+        title: title.trim(),
+        description: description.trim() || undefined,
+        category: category.trim() || undefined,
+        level: level || undefined,
+        price: price === '' ? undefined : price,
+        isPublished,
+        thumbnailFile: thumbnail ?? undefined,
+      })
+      toast.success('Course created')
+      navigate('/educator/courses')
+    } catch (err) {
+      const msg = err.response?.data?.error || 'Failed to create course'
+      setError(msg)
+      toast.error(msg)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -124,11 +136,15 @@ export default function CreateCourse() {
             className="mt-1 block w-full text-slate-800"
           />
         </div>
+        {error && (
+          <p className="text-sm text-red-600">{error}</p>
+        )}
         <button
           type="submit"
-          className="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+          disabled={loading}
+          className="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
         >
-          Create
+          {loading ? 'Creating...' : 'Create'}
         </button>
       </form>
     </main>
