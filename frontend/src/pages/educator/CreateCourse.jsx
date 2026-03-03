@@ -1,6 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { createCourse } from '../../api/course.js'
 
 export default function CreateCourse() {
+  const navigate = useNavigate()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
@@ -9,10 +13,26 @@ export default function CreateCourse() {
   const [isPublished, setIsPublished] = useState(false)
   const [thumbnail, setThumbnail] = useState(null)
 
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (!title?.trim()) return
+    await createCourse({
+      title: title.trim(),
+      description: description.trim() || undefined,
+      category: category.trim() || undefined,
+      level: level || undefined,
+      price: price === '' ? undefined : price,
+      isPublished,
+      thumbnailFile: thumbnail ?? undefined,
+    })
+    toast.success('Course created')
+    navigate('/educator/courses')
+  }
+
   return (
     <main className="min-h-screen p-6 bg-slate-50">
       <h1 className="text-xl font-semibold text-slate-800">Create Course</h1>
-      <form className="mt-6 max-w-lg space-y-4" onSubmit={(e) => e.preventDefault()}>
+      <form className="mt-6 max-w-lg space-y-4" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-slate-700">
             Title *
