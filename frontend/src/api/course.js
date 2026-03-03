@@ -20,7 +20,7 @@ export async function createCourse(payload) {
   if (payload.level) form.append('level', payload.level)
   if (payload.price !== '' && payload.price != null) form.append('price', payload.price)
   if (payload.isPublished !== undefined) form.append('isPublished', payload.isPublished)
-  if (payload.thumbnailFile) form.append('thumbnailFile', payload.thumbnailFile)
+  if (payload.thumbnailFile) form.append('thumbnail', payload.thumbnailFile)
   const { data } = await api.post('/course', form, {
     headers: { 'Content-Type': undefined },
   })
