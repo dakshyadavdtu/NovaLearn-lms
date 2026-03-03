@@ -46,9 +46,18 @@ export default function MyCourses() {
           (courses || []).map((c) => (
           <div
             key={c._id}
-            className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4"
+            className="flex gap-4 rounded-lg border border-slate-200 bg-white p-4"
           >
-            <div>
+            <div className="h-20 w-28 shrink-0 overflow-hidden rounded bg-slate-200">
+              {c.thumbnail ? (
+                <img src={c.thumbnail} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-xs text-slate-500">
+                  No image
+                </div>
+              )}
+            </div>
+            <div className="min-w-0 flex-1">
               <h2 className="font-medium text-slate-800">{c.title}</h2>
               {c.description && (
                 <p className="mt-1 text-sm text-slate-600 line-clamp-1">{c.description}</p>
