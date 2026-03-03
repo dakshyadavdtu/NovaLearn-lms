@@ -1,4 +1,5 @@
 import Course from '../models/Course.js'
+import { uploadImage } from '../utils/cloudinary.js'
 
 export async function createCourse(req, res) {
   try {
@@ -6,10 +7,16 @@ export async function createCourse(req, res) {
     if (!title || typeof title !== 'string' || !title.trim()) {
       return res.status(400).json({ error: 'Title is required' })
     }
+    let thumbnailUrl
+    if (req.file && req.file.buffer) {
+      const result = await uploadImage(req.file.buffer)
+      thumbnailUrl = result?.secure_url
+    }
     const course = await Course.create({
       title: title.trim(),
       description: description ? String(description).trim() : undefined,
       creator: req.user,
+      ...(thumbnailUrl && { thumbnail: thumbnailUrl }),
     })
     return res.status(201).json(course)
   } catch (err) {
@@ -47,6 +54,10 @@ export async function updateCourse(req, res) {
     }
     if (course.creator.toString() !== req.user) {
       return res.status(403).json({ error: 'Not your course' })
+    }
+    if (req.file && req.file.buffer) {
+      const result = await uploadImage(req.file.buffer)
+      if (result?.secure_url) course.thumbnail = result.secure_url
     }
     if (title !== undefined) course.title = String(title).trim()
     if (description !== undefined) course.description = String(description).trim()
