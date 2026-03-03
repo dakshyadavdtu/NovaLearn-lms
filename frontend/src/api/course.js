@@ -31,3 +31,15 @@ export async function createCourse(payload) {
   })
   return data
 }
+
+export async function updateCourse(id, payload) {
+  const form = new FormData()
+  form.append('title', payload.title ?? '')
+  form.append('description', payload.description ?? '')
+  form.append('isPublished', payload.isPublished === true)
+  if (payload.thumbnailFile) form.append('thumbnail', payload.thumbnailFile)
+  const { data } = await api.patch(`/course/${id}`, form, {
+    headers: { 'Content-Type': undefined },
+  })
+  return data
+}

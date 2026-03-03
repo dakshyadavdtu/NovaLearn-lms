@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { getCourseById } from '../../api/course.js'
+import { toast } from 'react-toastify'
+import { getCourseById, updateCourse } from '../../api/course.js'
 
 export default function EditCourse() {
   const { id } = useParams()
@@ -13,6 +14,27 @@ export default function EditCourse() {
   const [description, setDescription] = useState('')
   const [isPublished, setIsPublished] = useState(false)
   const [thumbnail, setThumbnail] = useState(null)
+  const [saving, setSaving] = useState(false)
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (!id) return
+    setSaving(true)
+    try {
+      await updateCourse(id, {
+        title,
+        description,
+        isPublished,
+        thumbnailFile: thumbnail ?? undefined,
+      })
+      toast.success('Course updated')
+      navigate('/educator/courses')
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to update course')
+    } finally {
+      setSaving(false)
+    }
+  }
 
   useEffect(() => {
     if (!id) return
@@ -50,7 +72,7 @@ export default function EditCourse() {
   return (
     <main className="min-h-screen p-6 bg-slate-50">
       <h1 className="text-xl font-semibold text-slate-800">Edit Course</h1>
-      <form className="mt-6 max-w-lg space-y-4" onSubmit={(e) => e.preventDefault()}>
+      <form className="mt-6 max-w-lg space-y-4" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-slate-700">Title *</label>
           <input
@@ -98,9 +120,10 @@ export default function EditCourse() {
         <div className="flex gap-2">
           <button
             type="submit"
-            className="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            disabled={saving}
+            className="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
           >
-            Save
+            {saving ? 'Saving...' : 'Save'}
           </button>
           <Link to="/educator/courses" className="rounded border border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">
             Cancel
