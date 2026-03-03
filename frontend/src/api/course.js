@@ -12,6 +12,11 @@ export async function getMyCourses() {
   return data
 }
 
+export async function getCourseById(id) {
+  const { data } = await api.get(`/course/${id}`)
+  return data
+}
+
 export async function createCourse(payload) {
   const form = new FormData()
   form.append('title', payload.title)
