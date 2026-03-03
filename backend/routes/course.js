@@ -15,7 +15,13 @@ const router = Router()
 router.post('/', authMiddleware, educatorOnly, uploadSingle, createCourse)
 router.get('/mine', authMiddleware, educatorOnly, getMyCourses)
 router.get('/:id', authMiddleware, getCourseById)
-router.patch('/:id', authMiddleware, uploadSingle, updateCourse)
+router.patch(
+  '/:id',
+  authMiddleware,
+  educatorOnly,
+  uploadSingle,
+  updateCourse,
+)
 router.delete('/:id', authMiddleware, educatorOnly, deleteCourse)
 
 export default router
