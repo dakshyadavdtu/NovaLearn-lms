@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { createLecture, getLecturesForCourse, updateLecture } from '../../api/lecture.js'
+import { createLecture, getLecturesForCourse, updateLecture, deleteLecture } from '../../api/lecture.js'
 
 export default function CourseLectures() {
   const { courseId } = useParams()
@@ -18,6 +18,7 @@ export default function CourseLectures() {
   const [editIsPreviewFree, setEditIsPreviewFree] = useState(false)
   const [editVideoFile, setEditVideoFile] = useState(null)
   const [updating, setUpdating] = useState(false)
+  const [deletingId, setDeletingId] = useState(null)
 
   useEffect(() => {
     if (!courseId) return
@@ -94,6 +95,26 @@ export default function CourseLectures() {
     }
   }
 
+  async function handleDelete(lecture) {
+    const confirmed = window.confirm('Delete this lecture? This cannot be undone.')
+    if (!confirmed) return
+
+    // Optimistically remove from UI (intentional humane bug)
+    setLectures((prev) => prev.filter((item) => item._id !== lecture._id))
+    setDeletingId(lecture._id)
+    try {
+      await deleteLecture(lecture._id)
+      toast.success('Lecture deleted')
+      if (editingLecture && editingLecture._id === lecture._id) {
+        resetEdit()
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to delete lecture')
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="mb-4 flex items-center justify-between">
@@ -143,6 +164,14 @@ export default function CourseLectures() {
                           Preview
                         </span>
                       )}
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(lecture)}
+                        disabled={deletingId === lecture._id}
+                        className="rounded border border-red-200 px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+                      >
+                        {deletingId === lecture._id ? 'Deleting...' : 'Delete'}
+                      </button>
                       <button
                         type="button"
                         onClick={() => startEdit(lecture)}

@@ -44,3 +44,7 @@ export async function updateLecture(lectureId, payload) {
   return data
 }
 
+export async function deleteLecture(lectureId) {
+  await api.delete(`/lectures/${lectureId}`)
+}
+
