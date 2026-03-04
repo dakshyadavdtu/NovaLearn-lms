@@ -11,6 +11,7 @@ import Dashboard from './pages/educator/Dashboard.jsx'
 import MyCourses from './pages/educator/MyCourses.jsx'
 import CreateCourse from './pages/educator/CreateCourse.jsx'
 import EditCourse from './pages/educator/EditCourse.jsx'
+import CourseLectures from './pages/educator/CourseLectures.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import EducatorRoute from './components/EducatorRoute.jsx'
 import { API_BASE } from './config.js'
@@ -54,6 +55,14 @@ function App() {
         <Route path="/educator/courses" element={<EducatorRoute><MyCourses /></EducatorRoute>} />
         <Route path="/educator/courses/new" element={<EducatorRoute><CreateCourse /></EducatorRoute>} />
         <Route path="/educator/courses/:id/edit" element={<EducatorRoute><EditCourse /></EducatorRoute>} />
+        <Route
+          path="/educator/courses/:courseId/lectures"
+          element={
+            <EducatorRoute>
+              <CourseLectures />
+            </EducatorRoute>
+          }
+        />
       </Routes>
       <ToastContainer position="top-right" theme="colored" />
     </>
