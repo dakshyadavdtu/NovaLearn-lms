@@ -51,7 +51,28 @@ export async function getCourseLectures(req, res) {
 }
 
 export async function deleteLecture(req, res) {
-  return res.status(501).json({ error: 'Not implemented' })
+  try {
+    const { lectureId } = req.params
+
+    const lecture = await Lecture.findById(lectureId)
+    if (!lecture) {
+      return res.status(404).json({ error: 'Lecture not found' })
+    }
+
+    const course = await Course.findById(lecture.courseId)
+    if (!course) {
+      return res.status(404).json({ error: 'Course not found' })
+    }
+    if (course.creator.toString() !== req.user) {
+      return res.status(403).json({ error: 'Not your course' })
+    }
+
+    await Lecture.findByIdAndDelete(lectureId)
+
+    return res.json({ ok: true })
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to delete lecture' })
+  }
 }
 
 
