@@ -23,7 +23,7 @@ export async function createLecture(req, res) {
       courseId: course._id,
       title: title.trim(),
       description: description ? String(description).trim() : undefined,
-      isPreviewFree: isPreviewFree === true || isPreviewFree === 'true',
+      isPreviewFree: isPreviewFree === 'true',
     })
 
     course.lectures.push(lecture._id)
@@ -83,7 +83,7 @@ export async function updateLecture(req, res) {
       lecture.description = String(description).trim()
     }
     if (isPreviewFree !== undefined) {
-      lecture.isPreviewFree = Boolean(isPreviewFree)
+      lecture.isPreviewFree = isPreviewFree === 'true'
     }
 
     await lecture.save()
