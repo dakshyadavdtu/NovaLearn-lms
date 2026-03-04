@@ -112,6 +112,10 @@ export async function deleteLecture(req, res) {
     }
 
     await Lecture.findByIdAndDelete(lectureId)
+    await Course.updateOne(
+      { _id: lecture.courseId },
+      { $pull: { lectures: lecture._id } }
+    )
 
     return res.json({ ok: true })
   } catch (err) {
