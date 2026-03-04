@@ -12,6 +12,12 @@ export default function CourseLectures() {
   const [description, setDescription] = useState('')
   const [isPreviewFree, setIsPreviewFree] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [editingLecture, setEditingLecture] = useState(null)
+  const [editTitle, setEditTitle] = useState('')
+  const [editDescription, setEditDescription] = useState('')
+  const [editIsPreviewFree, setEditIsPreviewFree] = useState(false)
+  const [editVideoFile, setEditVideoFile] = useState(null)
+  const [updating, setUpdating] = useState(false)
 
   useEffect(() => {
     if (!courseId) return
@@ -50,6 +56,23 @@ export default function CourseLectures() {
     }
   }
 
+  function startEdit(lecture) {
+    setEditingLecture(lecture)
+    setEditTitle(lecture.title || '')
+    setEditDescription(lecture.description || '')
+    setEditIsPreviewFree(Boolean(lecture.isPreviewFree))
+    setEditVideoFile(null)
+  }
+
+  function resetEdit() {
+    setEditingLecture(null)
+    setEditTitle('')
+    setEditDescription('')
+    setEditIsPreviewFree(false)
+    setEditVideoFile(null)
+    setUpdating(false)
+  }
+
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="mb-4 flex items-center justify-between">
@@ -82,20 +105,31 @@ export default function CourseLectures() {
             ) : (
               <ul className="mt-3 divide-y divide-slate-100">
                 {lectures.map((lecture) => (
-                  <li key={lecture._id} className="flex items-center justify-between py-2">
-                    <div>
-                      <p className="text-sm font-medium text-slate-800">{lecture.title}</p>
+                  <li key={lecture._id} className="flex items-center justify-between gap-4 py-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-slate-800">
+                        {lecture.title}
+                      </p>
                       {lecture.description && (
-                        <p className="mt-0.5 text-xs text-slate-500 line-clamp-2">
+                        <p className="mt-0.5 line-clamp-2 text-xs text-slate-500">
                           {lecture.description}
                         </p>
                       )}
                     </div>
-                    {lecture.isPreviewFree && (
-                      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
-                        Preview
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {lecture.isPreviewFree && (
+                        <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                          Preview
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => startEdit(lecture)}
+                        className="rounded border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100"
+                      >
+                        Edit
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -163,6 +197,98 @@ export default function CourseLectures() {
               </button>
             </form>
           </div>
+          {editingLecture && (
+            <div className="mt-6 rounded-lg border border-slate-200 bg-white p-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                  Edit lecture
+                </h2>
+                <button
+                  type="button"
+                  onClick={resetEdit}
+                  className="text-xs font-medium text-slate-500 hover:text-slate-700"
+                >
+                  Cancel
+                </button>
+              </div>
+              <p className="mt-1 text-xs text-slate-500">
+                Editing: <span className="font-mono text-slate-700">{editingLecture.title}</span>
+              </p>
+              <form className="mt-4 space-y-4">
+                <div>
+                  <label
+                    htmlFor="edit-lecture-title"
+                    className="block text-sm font-medium text-slate-700"
+                  >
+                    Title *
+                  </label>
+                  <input
+                    id="edit-lecture-title"
+                    type="text"
+                    required
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className="mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-800"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="edit-lecture-description"
+                    className="block text-sm font-medium text-slate-700"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    id="edit-lecture-description"
+                    rows={3}
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    className="mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm text-slate-800"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    id="edit-lecture-preview"
+                    type="checkbox"
+                    checked={editIsPreviewFree}
+                    onChange={(e) => setEditIsPreviewFree(e.target.checked)}
+                    className="rounded border-slate-300"
+                  />
+                  <label
+                    htmlFor="edit-lecture-preview"
+                    className="text-sm font-medium text-slate-700"
+                  >
+                    Free preview
+                  </label>
+                </div>
+                <div>
+                  <label
+                    htmlFor="edit-lecture-video"
+                    className="block text-sm font-medium text-slate-700"
+                  >
+                    Video file
+                  </label>
+                  <input
+                    id="edit-lecture-video"
+                    type="file"
+                    accept="video/*"
+                    onChange={(e) => setEditVideoFile(e.target.files?.[0] || null)}
+                    className="mt-1 block w-full text-sm text-slate-800"
+                  />
+                  <p className="mt-1 text-xs text-slate-500">
+                    Uploading a new video will replace the existing one.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={updating}
+                  className="mt-2 w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  {updating ? 'Updating...' : 'Update lecture'}
+                </button>
+              </form>
+            </div>
+          )}
         </div>
       </section>
     </main>
