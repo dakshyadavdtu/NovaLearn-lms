@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { createLecture, getLecturesForCourse } from '../../api/lecture.js'
+import { createLecture, getLecturesForCourse, updateLecture } from '../../api/lecture.js'
 
 export default function CourseLectures() {
   const { courseId } = useParams()
@@ -71,6 +71,27 @@ export default function CourseLectures() {
     setEditIsPreviewFree(false)
     setEditVideoFile(null)
     setUpdating(false)
+  }
+
+  async function handleUpdate(e) {
+    e.preventDefault()
+    if (!editingLecture || !editTitle.trim()) return
+    setUpdating(true)
+    try {
+      await updateLecture(editingLecture._id, {
+        title: editTitle.trim(),
+        description: editDescription,
+        isPreviewFree: editIsPreviewFree,
+        videoFile: editVideoFile || undefined,
+      })
+      toast.success('Lecture updated')
+      const data = await getLecturesForCourse(courseId)
+      setLectures(Array.isArray(data) ? data : [])
+      resetEdit()
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to update lecture')
+      setUpdating(false)
+    }
   }
 
   return (
@@ -214,7 +235,7 @@ export default function CourseLectures() {
               <p className="mt-1 text-xs text-slate-500">
                 Editing: <span className="font-mono text-slate-700">{editingLecture.title}</span>
               </p>
-              <form className="mt-4 space-y-4">
+              <form className="mt-4 space-y-4" onSubmit={handleUpdate}>
                 <div>
                   <label
                     htmlFor="edit-lecture-title"
@@ -280,7 +301,7 @@ export default function CourseLectures() {
                   </p>
                 </div>
                 <button
-                  type="button"
+                  type="submit"
                   disabled={updating}
                   className="mt-2 w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
                 >

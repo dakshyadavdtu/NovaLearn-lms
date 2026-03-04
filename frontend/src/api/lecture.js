@@ -24,3 +24,23 @@ export async function createLecture(courseId, payload) {
   return data
 }
 
+export async function updateLecture(lectureId, payload) {
+  const form = new FormData()
+  if (payload.title !== undefined && String(payload.title).trim() !== '') {
+    form.append('title', String(payload.title).trim())
+  }
+  if (payload.description !== undefined) {
+    form.append('description', String(payload.description))
+  }
+  if (payload.isPreviewFree !== undefined) {
+    form.append('isPreviewFree', payload.isPreviewFree)
+  }
+  if (payload.videoFile) {
+    form.append('video', payload.videoFile)
+  }
+  const { data } = await api.patch(`/lectures/${lectureId}`, form, {
+    headers: { 'Content-Type': undefined },
+  })
+  return data
+}
+
