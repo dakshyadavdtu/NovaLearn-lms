@@ -1,5 +1,6 @@
 import Lecture from '../models/Lecture.js'
 import Course from '../models/Course.js'
+import { uploadVideo } from '../utils/cloudinary.js'
 
 export async function createLecture(req, res) {
   try {
@@ -47,6 +48,46 @@ export async function getCourseLectures(req, res) {
     return res.json(lectures)
   } catch (err) {
     return res.status(500).json({ error: 'Failed to get lectures' })
+  }
+}
+
+export async function updateLecture(req, res) {
+  try {
+    const { lectureId } = req.params
+    const { title, description } = req.body
+
+    const lecture = await Lecture.findById(lectureId)
+    if (!lecture) {
+      return res.status(404).json({ error: 'Lecture not found' })
+    }
+
+    const course = await Course.findById(lecture.courseId)
+    if (!course) {
+      return res.status(404).json({ error: 'Course not found' })
+    }
+    if (course.creator.toString() !== req.user) {
+      return res.status(403).json({ error: 'Not your course' })
+    }
+
+    if (req.file && req.file.buffer) {
+      const result = await uploadVideo(req.file.buffer)
+      if (result?.secure_url) {
+        lecture.videoURL = result.secure_url
+      }
+    }
+
+    if (title !== undefined) {
+      lecture.title = String(title).trim()
+    }
+    if (description !== undefined) {
+      lecture.description = String(description).trim()
+    }
+
+    await lecture.save()
+
+    return res.json(lecture)
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to update lecture' })
   }
 }
 

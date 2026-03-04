@@ -19,3 +19,16 @@ export async function uploadImage(buffer, folder = 'lms-thumbnails') {
     Readable.from(buffer).pipe(stream)
   })
 }
+
+export async function uploadVideo(buffer, folder = 'lms-videos') {
+  if (!buffer || !Buffer.isBuffer(buffer)) {
+    throw new Error('Invalid buffer')
+  }
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder, resource_type: 'video' },
+      (err, result) => (err ? reject(err) : resolve(result))
+    )
+    Readable.from(buffer).pipe(stream)
+  })
+}
