@@ -7,9 +7,7 @@ const api = axios.create({
 })
 
 export async function getLecturesForCourse(courseId) {
-  const { data } = await api.get('/lectures', {
-    params: { courseId },
-  })
+  const { data } = await api.get(`/course/${courseId}/lectures`)
   return data
 }
 
@@ -20,8 +18,7 @@ export async function createLecture(courseId, payload) {
   if (payload.isPreviewFree !== undefined) {
     form.append('isPreviewFree', payload.isPreviewFree)
   }
-  const { data } = await api.post('/lectures', form, {
-    params: { courseId },
+  const { data } = await api.post(`/course/${courseId}/lectures`, form, {
     headers: { 'Content-Type': undefined },
   })
   return data
