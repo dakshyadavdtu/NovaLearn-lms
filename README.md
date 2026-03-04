@@ -5,9 +5,17 @@ A simple learning management system for tutorials and courses.
 - frontend/ - React app
 - backend/ - Express API
 
+## Features
+- Educators can create, edit, and delete courses.
+- Course thumbnails support upload with a simple fallback when missing.
+- Educators can add, edit, and delete lectures for a course.
+- Lecture videos can be uploaded and updated by educators.
+- Preview lectures can be played; non-preview lectures show as locked.
+
 ## Run locally
 - backend: `cd backend`, install dependencies, run the dev server
 - frontend: `cd frontend`, install dependencies, run the dev server
+- for file uploads (thumbnails and videos), make sure backend env is configured for your upload provider
 
 ## Auth
 Signup, login, and logout are wired up; auth uses cookies (httpOnly). The backend expects `JWT_SECRET` in its env (see backend `.env.example`). Without it, token signing falls back to a dev-only default.
