@@ -7,6 +7,7 @@ import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
+import CourseDetails from './pages/CourseDetails.jsx'
 import Dashboard from './pages/educator/Dashboard.jsx'
 import MyCourses from './pages/educator/MyCourses.jsx'
 import CreateCourse from './pages/educator/CreateCourse.jsx'
@@ -48,6 +49,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/courses/:id" element={<CourseDetails />} />
         <Route path="/login" element={<EducatorRoute><Login /></EducatorRoute>} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
