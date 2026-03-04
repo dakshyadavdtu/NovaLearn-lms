@@ -99,8 +99,6 @@ export default function CourseLectures() {
     const confirmed = window.confirm('Delete this lecture? This cannot be undone.')
     if (!confirmed) return
 
-    // Optimistically remove from UI (intentional humane bug)
-    setLectures((prev) => prev.filter((item) => item._id !== lecture._id))
     setDeletingId(lecture._id)
     try {
       await deleteLecture(lecture._id)
@@ -108,6 +106,8 @@ export default function CourseLectures() {
       if (editingLecture && editingLecture._id === lecture._id) {
         resetEdit()
       }
+      const data = await getLecturesForCourse(courseId)
+      setLectures(Array.isArray(data) ? data : [])
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to delete lecture')
     } finally {
