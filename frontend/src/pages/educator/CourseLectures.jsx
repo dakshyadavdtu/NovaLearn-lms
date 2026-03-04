@@ -1,11 +1,54 @@
 import { Link, useParams } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import { createLecture, getLecturesForCourse } from '../../api/lecture.js'
 
 export default function CourseLectures() {
   const { courseId } = useParams()
+  const [lectures, setLectures] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [isPreviewFree, setIsPreviewFree] = useState(false)
+  const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    if (!courseId) return
+    setLoading(true)
+    setError(null)
+    getLecturesForCourse(courseId)
+      .then((data) => {
+        setLectures(Array.isArray(data) ? data : [])
+      })
+      .catch((err) => {
+        setError(err.response?.data?.error || 'Failed to load lectures')
+      })
+      .finally(() => setLoading(false))
+  }, [courseId])
+
+  async function handleCreate(e) {
+    e.preventDefault()
+    if (!courseId || !title.trim()) return
+    setSaving(true)
+    try {
+      await createLecture(courseId, {
+        title: title.trim(),
+        description: description.trim() || undefined,
+        isPreviewFree,
+      })
+      toast.success('Lecture created')
+      setTitle('')
+      setDescription('')
+      setIsPreviewFree(false)
+      const data = await getLecturesForCourse(courseId)
+      setLectures(Array.isArray(data) ? data : [])
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to create lecture')
+    } finally {
+      setSaving(false)
+    }
+  }
 
   return (
     <main className="min-h-screen bg-slate-50 p-6">
@@ -30,9 +73,33 @@ export default function CourseLectures() {
             <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
               Lectures
             </h2>
-            <p className="mt-2 text-sm text-slate-500">
-              Lecture list will appear here for course <span className="font-mono text-slate-700">{courseId}</span>.
-            </p>
+            {loading ? (
+              <p className="mt-2 text-sm text-slate-500">Loading lectures...</p>
+            ) : error ? (
+              <p className="mt-2 text-sm text-red-600">{error}</p>
+            ) : lectures.length === 0 ? (
+              <p className="mt-2 text-sm text-slate-500">No lectures yet.</p>
+            ) : (
+              <ul className="mt-3 divide-y divide-slate-100">
+                {lectures.map((lecture) => (
+                  <li key={lecture._id} className="flex items-center justify-between py-2">
+                    <div>
+                      <p className="text-sm font-medium text-slate-800">{lecture.title}</p>
+                      {lecture.description && (
+                        <p className="mt-0.5 text-xs text-slate-500 line-clamp-2">
+                          {lecture.description}
+                        </p>
+                      )}
+                    </div>
+                    {lecture.isPreviewFree && (
+                      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                        Preview
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
         <div>
@@ -40,7 +107,7 @@ export default function CourseLectures() {
             <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
               Create lecture
             </h2>
-            <form className="mt-4 space-y-4">
+            <form className="mt-4 space-y-4" onSubmit={handleCreate}>
               <div>
                 <label
                   htmlFor="lecture-title"
@@ -88,10 +155,11 @@ export default function CourseLectures() {
                 </label>
               </div>
               <button
-                type="button"
+                type="submit"
+                disabled={saving}
                 className="mt-2 w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
               >
-                Save lecture
+                {saving ? 'Saving...' : 'Save lecture'}
               </button>
             </form>
           </div>
