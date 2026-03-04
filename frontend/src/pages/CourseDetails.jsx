@@ -128,12 +128,18 @@ export default function CourseDetails() {
           ) : selectedLecture.isPreviewFree ? (
             <div className="mt-3">
               <p className="text-sm font-medium text-slate-800">{selectedLecture.title}</p>
-              <video
-                key={selectedLecture._id}
-                controls
-                className="mt-3 aspect-video w-full rounded bg-black"
-                src={selectedLecture.videoURL.trim()}
-              />
+              {selectedLecture.videoURL ? (
+                <video
+                  key={selectedLecture._id}
+                  controls
+                  className="mt-3 aspect-video w-full rounded bg-black"
+                  src={selectedLecture.videoURL}
+                />
+              ) : (
+                <p className="mt-3 text-sm text-slate-500">
+                  Video not uploaded yet.
+                </p>
+              )}
             </div>
           ) : (
             <p className="mt-3 text-sm text-slate-500">
