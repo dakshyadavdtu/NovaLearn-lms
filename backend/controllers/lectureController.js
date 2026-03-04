@@ -54,7 +54,7 @@ export async function getCourseLectures(req, res) {
 export async function updateLecture(req, res) {
   try {
     const { lectureId } = req.params
-    const { title, description } = req.body
+    const { title, description, isPreviewFree } = req.body
 
     const lecture = await Lecture.findById(lectureId)
     if (!lecture) {
@@ -81,6 +81,9 @@ export async function updateLecture(req, res) {
     }
     if (description !== undefined) {
       lecture.description = String(description).trim()
+    }
+    if (isPreviewFree !== undefined) {
+      lecture.isPreviewFree = Boolean(isPreviewFree)
     }
 
     await lecture.save()
