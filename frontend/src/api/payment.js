@@ -8,7 +8,7 @@ const api = axios.create({
 })
 
 export async function createPaymentOrder(courseId) {
-  const { data } = await api.post('/payments/create', { courseId })
+  const { data } = await api.post('/payment/create-order', { courseId })
   return data
 }
 
