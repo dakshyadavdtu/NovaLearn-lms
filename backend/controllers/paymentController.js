@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import Course from '../models/Course.js'
 import Order from '../models/Order.js'
+import User from '../models/User.js'
 import { createProviderOrder } from '../utils/paymentProvider.js'
 
 export async function createOrder(req, res) {
@@ -133,6 +134,11 @@ export async function verifyPayment(req, res) {
       order.providerPaymentId = providerPaymentId
       await order.save()
     }
+
+    await User.updateOne(
+      { _id: order.userId },
+      { $push: { enrolledCourses: order.courseId } }
+    )
 
     return res.status(200).json({ ok: true })
   } catch (err) {
