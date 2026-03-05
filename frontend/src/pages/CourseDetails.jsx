@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { getCourseById } from '../api/course.js'
 import { getLecturesForCourse } from '../api/lecture.js'
 
@@ -11,6 +12,15 @@ export default function CourseDetails() {
   const [error, setError] = useState(null)
   const [lecturesError, setLecturesError] = useState(null)
   const [selectedLecture, setSelectedLecture] = useState(null)
+  const authUser = useSelector((state) => state.user?.user)
+
+  const isLoggedIn = Boolean(authUser)
+  const isEnrolled =
+    isLoggedIn &&
+    Array.isArray(authUser.enrolledCourses) &&
+    authUser.enrolledCourses.some(
+      (courseId) => String(courseId) === String(course?._id),
+    )
 
   useEffect(() => {
     if (!id) return
@@ -117,10 +127,41 @@ export default function CourseDetails() {
           </section>
         </section>
 
-        <aside className="mt-4 w-full max-w-md rounded-lg border border-slate-200 bg-white p-4 md:mt-0">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-            Preview player
-          </h2>
+        <aside className="mt-4 w-full max-w-md space-y-4 md:mt-0">
+          <section className="rounded-lg border border-slate-200 bg-white p-4">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              Access
+            </h2>
+            <div className="mt-3">
+              {!isLoggedIn ? (
+                <Link
+                  to="/login"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                >
+                  Login to enroll
+                </Link>
+              ) : isEnrolled ? (
+                <Link
+                  to={`/courses/${id}`}
+                  className="inline-flex w-full items-center justify-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+                >
+                  Go to course
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                >
+                  Enroll
+                </button>
+              )}
+            </div>
+          </section>
+
+          <section className="rounded-lg border border-slate-200 bg-white p-4">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              Preview player
+            </h2>
           {!selectedLecture ? (
             <p className="mt-3 text-sm text-slate-500">
               Select a lecture marked as preview to watch its video.
@@ -146,6 +187,7 @@ export default function CourseDetails() {
               This lecture is locked. It will be available after you enroll in the course.
             </p>
           )}
+          </section>
         </aside>
       </div>
     </main>
