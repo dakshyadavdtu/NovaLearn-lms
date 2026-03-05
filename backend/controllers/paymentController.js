@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import mongoose from 'mongoose'
 import Course from '../models/Course.js'
 import Order from '../models/Order.js'
 import User from '../models/User.js'
@@ -10,6 +11,10 @@ export async function createOrder(req, res) {
 
     if (!courseId) {
       return res.status(400).json({ error: 'courseId is required' })
+    }
+
+    if (!mongoose.isValidObjectId(courseId)) {
+      return res.status(400).json({ error: 'Invalid courseId' })
     }
 
     const course = await Course.findById(courseId)
@@ -77,6 +82,10 @@ export async function verifyPayment(req, res) {
         .json({ error: 'orderId or providerOrderId is required' })
     }
 
+    if (orderId && !mongoose.isValidObjectId(orderId)) {
+      return res.status(400).json({ error: 'Invalid orderId' })
+    }
+
     const orderQuery = orderId
       ? { _id: orderId, userId: req.user }
       : { providerOrderId: bodyProviderOrderId, userId: req.user }
@@ -135,6 +144,21 @@ export async function verifyPayment(req, res) {
     if (providerPaymentId) {
       order.providerPaymentId = providerPaymentId
       await order.save()
+    }
+
+    const user = await User.findById(order.userId).select('enrolledCourses')
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    const alreadyEnrolled = user.enrolledCourses.some(
+      (course) => String(course) === String(order.courseId)
+    )
+
+    if (alreadyEnrolled) {
+      return res
+        .status(200)
+        .json({ ok: true, message: 'Already enrolled in course' })
     }
 
     await User.updateOne(
