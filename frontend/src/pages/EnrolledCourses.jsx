@@ -22,6 +22,15 @@ export default function EnrolledCourses() {
       })
   }, [])
 
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-slate-50 p-6">
+        <h1 className="text-xl font-semibold text-slate-900">My Courses</h1>
+        <p className="mt-2 text-sm text-slate-600">Loading enrolled courses...</p>
+      </main>
+    )
+  }
+
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <h1 className="text-xl font-semibold text-slate-900">My Courses</h1>
@@ -31,7 +40,10 @@ export default function EnrolledCourses() {
         </p>
       )}
       <div className="mt-4 space-y-3">
-        {courses.map((course) => (
+        {(!courses || courses.length === 0) ? (
+          <p className="text-sm text-slate-600">You are not enrolled in any courses yet.</p>
+        ) : (
+        (courses || []).map((course) => (
           <Link
             key={course._id}
             to={`/courses/${course._id}`}
@@ -62,6 +74,7 @@ export default function EnrolledCourses() {
             </div>
           </Link>
         ))}
+        )}
       </div>
     </main>
   )
