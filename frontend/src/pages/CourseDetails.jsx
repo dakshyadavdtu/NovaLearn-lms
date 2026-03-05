@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 import { getCourseById } from '../api/course.js'
 import { getLecturesForCourse } from '../api/lecture.js'
+import { createPaymentOrder } from '../api/payment.js'
 
 export default function CourseDetails() {
   const { id } = useParams()
@@ -12,6 +14,7 @@ export default function CourseDetails() {
   const [error, setError] = useState(null)
   const [lecturesError, setLecturesError] = useState(null)
   const [selectedLecture, setSelectedLecture] = useState(null)
+  const [enrolling, setEnrolling] = useState(false)
   const authUser = useSelector((state) => state.user?.user)
 
   const isLoggedIn = Boolean(authUser)
@@ -21,6 +24,21 @@ export default function CourseDetails() {
     authUser.enrolledCourses.some(
       (courseId) => String(courseId) === String(course?._id),
     )
+
+  async function handleEnrollClick() {
+    if (!id || !isLoggedIn || isEnrolled || enrolling) return
+    setEnrolling(true)
+    try {
+      const order = await createPaymentOrder(id)
+      // Payment flow will be implemented in the next phase
+      console.log('Payment order created', order)
+      toast.success('Order created. Redirecting to payment...')
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to start payment')
+    } finally {
+      setEnrolling(false)
+    }
+  }
 
   useEffect(() => {
     if (!id) return
@@ -150,9 +168,11 @@ export default function CourseDetails() {
               ) : (
                 <button
                   type="button"
-                  className="inline-flex w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                  onClick={handleEnrollClick}
+                  disabled={enrolling}
+                  className="inline-flex w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
                 >
-                  Enroll
+                  {enrolling ? 'Starting payment...' : 'Enroll'}
                 </button>
               )}
             </div>
