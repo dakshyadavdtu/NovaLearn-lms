@@ -25,14 +25,61 @@ export default function CourseDetails() {
       (courseId) => String(courseId) === String(course?._id),
     )
 
+  async function startPaymentFlow(order) {
+    if (
+      order?.provider === 'razorpay' &&
+      window.Razorpay &&
+      import.meta.env.VITE_RAZORPAY_KEY_ID
+    ) {
+      const key = import.meta.env.VITE_RAZORPAY_KEY_ID
+      return new Promise((resolve, reject) => {
+        const options = {
+          key,
+          amount: Number(order.amount || 0) * 100,
+          currency: order.currency || 'INR',
+          name: order.courseTitle || 'Course purchase',
+          order_id: order.providerOrderId,
+          handler(response) {
+            resolve({
+              provider: 'razorpay',
+              providerOrderId: order.providerOrderId,
+              providerPaymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+            })
+          },
+          modal: {
+            ondismiss() {
+              reject(new Error('Payment cancelled'))
+            },
+          },
+        }
+
+        const rzp = new window.Razorpay(options)
+        rzp.open()
+      })
+    }
+
+    const confirmed = window.confirm(
+      'Simulate successful payment for this course?'
+    )
+    if (!confirmed) {
+      throw new Error('Payment cancelled')
+    }
+
+    return {
+      provider: 'dev',
+      orderId: order.orderId,
+      success: true,
+    }
+  }
+
   async function handleEnrollClick() {
     if (!id || !isLoggedIn || isEnrolled || enrolling) return
     setEnrolling(true)
     try {
       const order = await createPaymentOrder(id)
-      // Payment flow will be implemented in the next phase
-      console.log('Payment order created', order)
-      toast.success('Order created. Redirecting to payment...')
+      await startPaymentFlow(order)
+      toast.success('Payment completed. Verifying enrollment...')
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to start payment')
     } finally {
