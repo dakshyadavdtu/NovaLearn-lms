@@ -23,8 +23,8 @@ export default function CourseDetails() {
   const isLoggedIn = Boolean(authUser)
   const isEnrolled =
     isLoggedIn &&
-    Array.isArray(authUser.courses) &&
-    authUser.courses.some(
+    Array.isArray(authUser.enrolledCourses) &&
+    authUser.enrolledCourses.some(
       (courseId) => String(courseId) === String(course?._id),
     )
 
