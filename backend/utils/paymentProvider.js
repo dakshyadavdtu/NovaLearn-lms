@@ -27,7 +27,7 @@ export async function createProviderOrder({ amount, currency, receipt }) {
 
   if (provider === 'razorpay' && razorpayClient) {
     const order = await razorpayClient.orders.create({
-      amount,
+      amount: amount * 100,
       currency,
       receipt,
     })
