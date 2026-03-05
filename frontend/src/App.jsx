@@ -8,6 +8,7 @@ import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import CourseDetails from './pages/CourseDetails.jsx'
+import EnrolledCourses from './pages/EnrolledCourses.jsx'
 import Dashboard from './pages/educator/Dashboard.jsx'
 import MyCourses from './pages/educator/MyCourses.jsx'
 import CreateCourse from './pages/educator/CreateCourse.jsx'
@@ -46,6 +47,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Home apiBase={API_BASE} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-courses"
+          element={
+            <ProtectedRoute>
+              <EnrolledCourses />
             </ProtectedRoute>
           }
         />

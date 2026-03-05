@@ -1,4 +1,5 @@
 import User from '../models/User.js'
+import Course from '../models/Course.js'
 
 function toSafeUser(user) {
   if (!user) return null
@@ -19,4 +20,28 @@ export async function getMe(req, res) {
 
 export function pingAuth(req, res) {
   return res.json({ ok: true, userId: req.user })
+}
+
+export async function getEnrolledCourses(req, res) {
+  try {
+    const user = await User.findById(req.user).populate('enrolledCourses')
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+    const courses = Array.isArray(user.enrolledCourses)
+      ? user.enrolledCourses.map((course) => {
+          if (!course) return null
+          const c = course.toObject ? course.toObject() : course
+          return {
+            _id: c._id,
+            title: c.title,
+            description: c.description || '',
+            thumbnail: c.thumbnail || null,
+          }
+        }).filter(Boolean)
+      : []
+    return res.json({ courses })
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to get enrolled courses' })
+  }
 }
