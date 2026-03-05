@@ -139,7 +139,7 @@ export async function verifyPayment(req, res) {
 
     await User.updateOne(
       { _id: order.userId },
-      { $push: { enrolledCourses: order.courseId } }
+      { $addToSet: { enrolledCourses: order.courseId } }
     )
 
     return res.status(200).json({ ok: true })
