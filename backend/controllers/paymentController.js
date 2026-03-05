@@ -50,6 +50,9 @@ export async function createOrder(req, res) {
       orderId: order._id,
       amount: order.amount,
       currency: order.currency,
+      provider: order.provider,
+      providerOrderId: providerData?.providerOrderId || null,
+      courseTitle: course.title,
     })
   } catch (err) {
     return res.status(500).json({ error: 'Failed to create order' })
