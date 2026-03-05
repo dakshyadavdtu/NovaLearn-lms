@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { getCourseById } from '../api/course.js'
 import { getLecturesForCourse } from '../api/lecture.js'
 import { createPaymentOrder, verifyPayment } from '../api/payment.js'
+import { getMe } from '../api/auth'
+import { setUser } from '../redux/userSlice'
 
 export default function CourseDetails() {
   const { id } = useParams()
@@ -15,13 +17,14 @@ export default function CourseDetails() {
   const [lecturesError, setLecturesError] = useState(null)
   const [selectedLecture, setSelectedLecture] = useState(null)
   const [enrolling, setEnrolling] = useState(false)
+  const dispatch = useDispatch()
   const authUser = useSelector((state) => state.user?.user)
 
   const isLoggedIn = Boolean(authUser)
   const isEnrolled =
     isLoggedIn &&
-    Array.isArray(authUser.enrolledCourses) &&
-    authUser.enrolledCourses.some(
+    Array.isArray(authUser.courses) &&
+    authUser.courses.some(
       (courseId) => String(courseId) === String(course?._id),
     )
 
@@ -93,6 +96,14 @@ export default function CourseDetails() {
             }
 
       await verifyPayment(verifyPayload)
+      try {
+        const me = await getMe()
+        if (me?.user) {
+          dispatch(setUser(me.user))
+        }
+      } catch {
+        // best-effort user refresh
+      }
       toast.success('Payment verified. You can now access the course.')
     } catch (err) {
       const message =
@@ -183,7 +194,15 @@ export default function CourseDetails() {
                       )}
                     </div>
                     <div className="flex items-center gap-2">
-                      {lecture.isPreviewFree ? (
+                      {isEnrolled ? (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedLecture(lecture)}
+                          className="rounded border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100"
+                        >
+                          Play
+                        </button>
+                      ) : lecture.isPreviewFree ? (
                         <>
                           <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
                             Preview
