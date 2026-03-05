@@ -95,7 +95,11 @@ export default function CourseDetails() {
       await verifyPayment(verifyPayload)
       toast.success('Payment verified. You can now access the course.')
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Failed to start payment')
+      const message =
+        err.response?.data?.error ||
+        err.message ||
+        'Payment failed. Please try again.'
+      toast.error(message)
     } finally {
       setEnrolling(false)
     }
