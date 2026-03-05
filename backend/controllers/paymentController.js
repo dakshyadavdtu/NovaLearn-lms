@@ -130,6 +130,8 @@ export async function verifyPayment(req, res) {
       return res.status(400).json({ error: 'Payment verification failed' })
     }
 
+    order.paymentStatus = 'paid'
+
     if (providerPaymentId) {
       order.providerPaymentId = providerPaymentId
       await order.save()
