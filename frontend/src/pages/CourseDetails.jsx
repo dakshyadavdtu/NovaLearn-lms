@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { getCourseById } from '../api/course.js'
 import { getLecturesForCourse } from '../api/lecture.js'
-import { createPaymentOrder } from '../api/payment.js'
+import { createPaymentOrder, verifyPayment } from '../api/payment.js'
 
 export default function CourseDetails() {
   const { id } = useParams()
@@ -78,8 +78,22 @@ export default function CourseDetails() {
     setEnrolling(true)
     try {
       const order = await createPaymentOrder(id)
-      await startPaymentFlow(order)
-      toast.success('Payment completed. Verifying enrollment...')
+      const paymentResult = await startPaymentFlow(order)
+
+      const verifyPayload =
+        paymentResult.provider === 'razorpay'
+          ? {
+              providerOrderId: paymentResult.providerOrderId,
+              providerPaymentId: paymentResult.providerPaymentId,
+              signature: paymentResult.signature,
+            }
+          : {
+              orderId: paymentResult.orderId,
+              success: true,
+            }
+
+      await verifyPayment(verifyPayload)
+      toast.success('Payment verified. You can now access the course.')
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to start payment')
     } finally {

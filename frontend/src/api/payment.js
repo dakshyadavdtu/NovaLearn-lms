@@ -12,3 +12,9 @@ export async function createPaymentOrder(courseId) {
   return data
 }
 
+export async function verifyPayment(payload) {
+  const { data } = await api.post('/payment/verify', payload)
+  return data
+}
+
+
