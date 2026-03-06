@@ -21,7 +21,7 @@ export async function addReview(req, res) {
     if (!user) {
       return res.status(404).json({ ok: false, message: 'User not found' })
     }
-    if (!user.enrolledCourses.some((c) => c === courseId)) {
+    if (!user.enrolledCourses.some((c) => String(c) === String(courseId))) {
       return res.status(403).json({ ok: false, message: 'Not enrolled in this course' })
     }
     const existing = await Review.findOne({ courseId, userId: req.user })
