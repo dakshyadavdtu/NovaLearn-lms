@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import Review from '../models/Review.js'
 import Course from '../models/Course.js'
 import User from '../models/User.js'
@@ -35,6 +36,9 @@ export async function addReview(req, res) {
 export async function getReviewsByCourse(req, res) {
   try {
     const { courseId } = req.params
+    if (!mongoose.isValidObjectId(courseId)) {
+      return res.status(400).json({ ok: false, message: 'Invalid course id' })
+    }
     const reviews = await Review.find({ course: courseId })
       .sort({ createdAt: -1 })
       .lean()
