@@ -22,8 +22,8 @@ export async function addReview(req, res) {
       return res.status(404).json({ ok: false, message: 'User not found' })
     }
     const review = await Review.create({
-      course: courseId,
-      user: req.user,
+      courseId,
+      userId: req.user,
       rating: numRating,
       comment: comment != null ? String(comment) : undefined,
     })
@@ -39,8 +39,9 @@ export async function getReviewsByCourse(req, res) {
     if (!mongoose.isValidObjectId(courseId)) {
       return res.status(400).json({ ok: false, message: 'Invalid course id' })
     }
-    const reviews = await Review.find({ course: courseId })
+    const reviews = await Review.find({ courseId })
       .sort({ createdAt: -1 })
+      .populate('userId', 'name avatar')
       .lean()
     return res.json({ ok: true, reviews })
   } catch (err) {
