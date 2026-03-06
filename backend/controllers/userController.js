@@ -59,6 +59,8 @@ export async function getEnrolledCourses(req, res) {
             title: c.title,
             description: c.description || '',
             thumbnail: c.thumbnail || null,
+            ratingAvg: c.ratingAvg,
+            ratingCount: c.ratingCount,
           }
         }).filter(Boolean)
       : []

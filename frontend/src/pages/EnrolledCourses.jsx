@@ -66,6 +66,14 @@ export default function EnrolledCourses() {
               <h2 className="truncate text-sm font-medium text-slate-900">
                 {course.title || 'Untitled course'}
               </h2>
+              {(course.ratingAvg != null || (course.ratingCount != null && course.ratingCount > 0)) && (
+                <p className="mt-1 text-xs text-slate-600">
+                  {course.ratingAvg != null ? `${Number(course.ratingAvg).toFixed(1)} ★` : ''}
+                  {course.ratingCount != null && course.ratingCount > 0
+                    ? ` · ${course.ratingCount} review${course.ratingCount !== 1 ? 's' : ''}`
+                    : ''}
+                </p>
+              )}
               {course.description && (
                 <p className="mt-1 line-clamp-2 text-xs text-slate-600">
                   {course.description}
