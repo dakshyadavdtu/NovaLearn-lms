@@ -33,7 +33,7 @@ export async function addReview(req, res) {
     ])
     const count = stats?.count ?? 0
     const sum = stats?.sum ?? 0
-    const ratingAvg = count > 0 ? Math.floor(sum / count) : undefined
+    const ratingAvg = count > 0 ? Math.round((sum / count) * 10) / 10 : undefined
     await Course.findByIdAndUpdate(courseId, {
       ratingAvg: count > 0 ? ratingAvg : null,
       ratingCount: count,
