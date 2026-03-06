@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { getCourseById } from '../api/course.js'
 import { getLecturesForCourse } from '../api/lecture.js'
-import { getReviewsByCourse } from '../api/review.js'
+import { getReviewsByCourse, addReview } from '../api/review.js'
 import { createPaymentOrder, verifyPayment } from '../api/payment.js'
 import { getMe } from '../api/auth'
 import { setUser } from '../redux/userSlice'
@@ -21,6 +21,9 @@ export default function CourseDetails() {
   const [reviews, setReviews] = useState([])
   const [reviewsLoading, setReviewsLoading] = useState(false)
   const [reviewsError, setReviewsError] = useState(null)
+  const [reviewRating, setReviewRating] = useState(5)
+  const [reviewComment, setReviewComment] = useState('')
+  const [reviewSubmitting, setReviewSubmitting] = useState(false)
   const dispatch = useDispatch()
   const authUser = useSelector((state) => state.user?.user)
 
@@ -155,6 +158,24 @@ export default function CourseDetails() {
     loadReviews()
   }, [id, course?._id])
 
+  async function handleSubmitReview(e) {
+    e.preventDefault()
+    if (!id || reviewSubmitting) return
+    setReviewSubmitting(true)
+    try {
+      await addReview({ courseId: id, rating: reviewRating, comment: reviewComment })
+      toast.success('Review submitted')
+      await loadReviews()
+      const courseData = await getCourseById(id)
+      setCourse(courseData)
+      setReviewComment('')
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message || 'Failed to submit review')
+    } finally {
+      setReviewSubmitting(false)
+    }
+  }
+
   if (loading) {
     return (
       <main className="min-h-screen bg-slate-50 p-6">
@@ -263,6 +284,35 @@ export default function CourseDetails() {
             <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
               Reviews
             </h2>
+            {isLoggedIn && isEnrolled && (
+              <form onSubmit={handleSubmitReview} className="mt-3 rounded-lg border border-slate-200 bg-white p-4">
+                <label className="block text-sm font-medium text-slate-700">Your rating</label>
+                <select
+                  value={reviewRating}
+                  onChange={(e) => setReviewRating(Number(e.target.value))}
+                  className="mt-1 block w-full max-w-xs rounded border border-slate-300 px-3 py-2 text-sm"
+                >
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>{n} ★</option>
+                  ))}
+                </select>
+                <label className="mt-3 block text-sm font-medium text-slate-700">Comment (optional)</label>
+                <textarea
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  rows={3}
+                  className="mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm"
+                  placeholder="Share your experience..."
+                />
+                <button
+                  type="submit"
+                  disabled={reviewSubmitting}
+                  className="mt-3 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  {reviewSubmitting ? 'Submitting...' : 'Submit review'}
+                </button>
+              </form>
+            )}
             {reviewsLoading && (
               <p className="mt-2 text-sm text-slate-500">Loading reviews...</p>
             )}
