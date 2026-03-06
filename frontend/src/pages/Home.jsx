@@ -58,6 +58,9 @@ function Home({ apiBase }) {
               Educator Dashboard
             </Link>
           )}
+          <Link to="/profile" className="px-4 py-2 bg-slate-600 text-white rounded text-sm">
+            Profile
+          </Link>
           <button
             type="button"
             onClick={handleLogout}

@@ -14,6 +14,7 @@ import MyCourses from './pages/educator/MyCourses.jsx'
 import CreateCourse from './pages/educator/CreateCourse.jsx'
 import EditCourse from './pages/educator/EditCourse.jsx'
 import CourseLectures from './pages/educator/CourseLectures.jsx'
+import Profile from './pages/Profile.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import EducatorRoute from './components/EducatorRoute.jsx'
 import { API_BASE } from './config.js'
@@ -55,6 +56,14 @@ function App() {
           element={
             <ProtectedRoute>
               <EnrolledCourses />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />

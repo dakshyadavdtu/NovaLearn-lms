@@ -20,6 +20,8 @@ const userSchema = new mongoose.Schema(
       ],
       default: [],
     },
+    bio: { type: String },
+    avatar: { type: String },
     createdAt: { type: Date, default: Date.now },
   },
   { versionKey: false }
