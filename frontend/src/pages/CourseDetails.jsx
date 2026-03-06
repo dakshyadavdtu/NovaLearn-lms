@@ -330,19 +330,19 @@ export default function CourseDetails() {
                     className="rounded-lg border border-slate-200 bg-white p-3 text-sm"
                   >
                     <div className="flex items-center gap-2">
-                      {review.user.avatar ? (
+                      {review.userId?.avatar ? (
                         <img
-                          src={review.user.avatar}
+                          src={review.userId.avatar}
                           alt=""
                           className="h-8 w-8 rounded-full object-cover"
                         />
                       ) : (
                         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-medium text-slate-600">
-                          {review.user.name ? review.user.name[0] : '?'}
+                          {(review.userId?.name && review.userId.name[0]) || '?'}
                         </span>
                       )}
                       <span className="font-medium text-slate-800">
-                        {review.user.name}
+                        {review.userId?.name ?? 'Anonymous'}
                       </span>
                       <span className="text-amber-600">{review.rating} ★</span>
                     </div>
