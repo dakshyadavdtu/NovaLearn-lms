@@ -27,6 +27,13 @@ export async function getMe() {
   return data
 }
 
+export async function updateProfile(formData) {
+  const { data } = await api.patch('/user/profile', formData, {
+    headers: { 'Content-Type': undefined },
+  })
+  return data
+}
+
 export async function sendForgotOtp(email) {
   const { data } = await api.post('/auth/forgot/send-otp', { email })
   return data
