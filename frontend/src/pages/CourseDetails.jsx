@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { getCourseById } from '../api/course.js'
 import { getLecturesForCourse } from '../api/lecture.js'
+import { getReviewsByCourse } from '../api/review.js'
 import { createPaymentOrder, verifyPayment } from '../api/payment.js'
 import { getMe } from '../api/auth'
 import { setUser } from '../redux/userSlice'
@@ -17,6 +18,9 @@ export default function CourseDetails() {
   const [lecturesError, setLecturesError] = useState(null)
   const [selectedLecture, setSelectedLecture] = useState(null)
   const [enrolling, setEnrolling] = useState(false)
+  const [reviews, setReviews] = useState([])
+  const [reviewsLoading, setReviewsLoading] = useState(false)
+  const [reviewsError, setReviewsError] = useState(null)
   const dispatch = useDispatch()
   const authUser = useSelector((state) => state.user?.user)
 
@@ -132,6 +136,25 @@ export default function CourseDetails() {
       .finally(() => setLoading(false))
   }, [id])
 
+  async function loadReviews() {
+    if (!id) return
+    setReviewsLoading(true)
+    setReviewsError(null)
+    try {
+      const res = await getReviewsByCourse(id)
+      setReviews(res?.reviews ?? [])
+    } catch (err) {
+      setReviewsError(err.response?.data?.message || err.message || 'Failed to load reviews')
+    } finally {
+      setReviewsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (!id || !course) return
+    loadReviews()
+  }, [id, course?._id])
+
   if (loading) {
     return (
       <main className="min-h-screen bg-slate-50 p-6">
@@ -157,6 +180,14 @@ export default function CourseDetails() {
         <section className="flex-1">
           <header className="border-b border-slate-200 pb-4">
             <h1 className="text-2xl font-semibold text-slate-900">{course.title}</h1>
+            {(course.ratingAvg != null || course.ratingCount > 0) && (
+              <p className="mt-1 text-sm text-slate-600">
+                {course.ratingAvg != null ? `${Number(course.ratingAvg).toFixed(1)} ★` : ''}
+                {course.ratingCount != null && course.ratingCount > 0
+                  ? ` · ${course.ratingCount} review${course.ratingCount !== 1 ? 's' : ''}`
+                  : ''}
+              </p>
+            )}
             {course.description && (
               <p className="mt-2 text-sm text-slate-700">{course.description}</p>
             )}
@@ -222,6 +253,52 @@ export default function CourseDetails() {
                         </span>
                       )}
                     </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section className="mt-8">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              Reviews
+            </h2>
+            {reviewsLoading && (
+              <p className="mt-2 text-sm text-slate-500">Loading reviews...</p>
+            )}
+            {reviewsError && (
+              <p className="mt-2 text-sm text-red-600">{reviewsError}</p>
+            )}
+            {!reviewsLoading && !reviewsError && reviews.length === 0 && (
+              <p className="mt-2 text-sm text-slate-500">No reviews yet.</p>
+            )}
+            {!reviewsLoading && !reviewsError && reviews.length > 0 && (
+              <ul className="mt-3 space-y-3">
+                {reviews.map((review) => (
+                  <li
+                    key={review._id}
+                    className="rounded-lg border border-slate-200 bg-white p-3 text-sm"
+                  >
+                    <div className="flex items-center gap-2">
+                      {review.user.avatar ? (
+                        <img
+                          src={review.user.avatar}
+                          alt=""
+                          className="h-8 w-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-medium text-slate-600">
+                          {review.user.name ? review.user.name[0] : '?'}
+                        </span>
+                      )}
+                      <span className="font-medium text-slate-800">
+                        {review.user.name}
+                      </span>
+                      <span className="text-amber-600">{review.rating} ★</span>
+                    </div>
+                    {review.comment && (
+                      <p className="mt-2 text-slate-600">{review.comment}</p>
+                    )}
                   </li>
                 ))}
               </ul>
