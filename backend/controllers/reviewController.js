@@ -34,7 +34,11 @@ export async function addReview(req, res) {
 
 export async function getReviewsByCourse(req, res) {
   try {
-    return res.status(501).json({ ok: false, message: 'Not implemented' })
+    const { courseId } = req.params
+    const reviews = await Review.find({ course: courseId })
+      .sort({ createdAt: -1 })
+      .lean()
+    return res.json({ ok: true, reviews })
   } catch (err) {
     return res.status(500).json({ ok: false, message: err.message || 'Failed to get reviews' })
   }
