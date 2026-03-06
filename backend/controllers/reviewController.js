@@ -27,6 +27,17 @@ export async function addReview(req, res) {
       rating: numRating,
       comment: comment != null ? String(comment) : undefined,
     })
+    const [stats] = await Review.aggregate([
+      { $match: { courseId: new mongoose.Types.ObjectId(courseId) } },
+      { $group: { _id: null, count: { $sum: 1 }, sum: { $sum: '$rating' } } },
+    ])
+    const count = stats?.count ?? 0
+    const sum = stats?.sum ?? 0
+    const ratingAvg = count > 0 ? Math.floor(sum / count) : undefined
+    await Course.findByIdAndUpdate(courseId, {
+      ratingAvg: count > 0 ? ratingAvg : null,
+      ratingCount: count,
+    })
     return res.status(201).json({ ok: true, review })
   } catch (err) {
     return res.status(500).json({ ok: false, message: err.message || 'Failed to add review' })
