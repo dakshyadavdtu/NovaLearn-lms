@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Navigate } from 'react-router-dom'
 import { updateProfile as apiUpdateProfile } from '../api/auth'
+import { setUser } from '../redux/userSlice'
 
 export default function EditProfile() {
   const user = useSelector((state) => state.user?.user)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const [name, setName] = useState(user?.name ?? '')
   const [bio, setBio] = useState(user?.bio ?? '')
@@ -24,7 +26,8 @@ export default function EditProfile() {
       form.append('name', name.trim())
       form.append('bio', bio)
       if (avatarFile) form.append('avatar', avatarFile)
-      await apiUpdateProfile(form)
+      const data = await apiUpdateProfile(form)
+      if (data?.user) dispatch(setUser(data.user))
       toast.success('Profile updated')
       navigate('/profile')
     } catch (err) {
