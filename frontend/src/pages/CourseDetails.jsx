@@ -319,7 +319,7 @@ export default function CourseDetails() {
             {reviewsError && (
               <p className="mt-2 text-sm text-red-600">{reviewsError}</p>
             )}
-            {!reviewsLoading && !reviewsError && reviews.length === 0 && (
+            {!reviewsLoading && !reviewsError && (course.ratingCount == null || course.ratingCount === 0) && (
               <p className="mt-2 text-sm text-slate-500">No reviews yet.</p>
             )}
             {!reviewsLoading && !reviewsError && reviews.length > 0 && (
