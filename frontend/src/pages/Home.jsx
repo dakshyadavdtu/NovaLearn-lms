@@ -52,7 +52,16 @@ function Home({ apiBase }) {
       </p>
       {user ? (
         <div className="flex flex-col items-center gap-2">
-          <p className="text-slate-700">Logged in as <span className="font-medium">{user.name}</span></p>
+          <div className="flex items-center gap-2">
+            {user.avatar ? (
+              <img src={user.avatar} alt="" className="h-8 w-8 rounded-full object-cover" />
+            ) : (
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-300 text-sm font-medium text-slate-700">
+                {user.name ? user.name[0].toUpperCase() : '?'}
+              </span>
+            )}
+            <p className="text-slate-700">Logged in as <span className="font-medium">{user.name}</span></p>
+          </div>
           <Link to="/search-ai" className="px-4 py-2 bg-slate-600 text-white rounded text-sm">
             AI Search
           </Link>
