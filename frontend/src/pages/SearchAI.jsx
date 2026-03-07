@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { searchAI } from '../api/ai.js'
 
 function SearchAI() {
@@ -42,7 +43,40 @@ function SearchAI() {
       </form>
       {loading && <p className="mt-4 text-sm text-slate-600">Searching...</p>}
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-      {results !== null && !loading && <p className="mt-4 text-sm text-slate-600">{results.length} result(s)</p>}
+      {results !== null && !loading && (
+        <div className="mt-4 space-y-3">
+          {results.map((course) => (
+            <Link
+              key={course._id}
+              to={`/courses/${course._id}`}
+              className="flex gap-4 rounded-lg border border-slate-200 bg-white p-4 hover:bg-slate-50 block"
+            >
+              <div className="h-20 w-28 shrink-0 overflow-hidden rounded bg-slate-200">
+                {(course.thumbnailUrl || course.thumbnail) ? (
+                  <img
+                    src={course.thumbnailUrl || course.thumbnail}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-xs text-slate-500">No image</div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h2 className="truncate text-sm font-medium text-slate-900">{course.title || 'Untitled course'}</h2>
+                {(course.ratingAvg != null || (course.ratingCount != null && course.ratingCount > 0)) && (
+                  <p className="mt-1 text-xs text-slate-600">
+                    {course.ratingAvg != null ? `${Number(course.ratingAvg).toFixed(1)} ★` : ''}
+                    {course.ratingCount != null && course.ratingCount > 0
+                      ? ` · ${course.ratingCount} review${course.ratingCount !== 1 ? 's' : ''}`
+                      : ''}
+                  </p>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </main>
   )
 }
