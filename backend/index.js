@@ -9,6 +9,7 @@ import courseRouter from './routes/course.js'
 import lectureRouter from './routes/lecture.js'
 import paymentRouter from './routes/payment.js'
 import reviewRouter from './routes/review.js'
+import aiRouter from './routes/ai.js'
 
 dotenv.config()
 
@@ -40,6 +41,7 @@ app.use('/api/course', courseRouter)
 app.use('/api/lectures', lectureRouter)
 app.use('/api/payment', paymentRouter)
 app.use('/api/review', reviewRouter)
+app.use('/api/ai', aiRouter)
 
 const PORT = process.env.PORT || 8000
 
