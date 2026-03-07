@@ -20,6 +20,7 @@ function toSummary(c) {
 async function fallbackSearch(q) {
   const regex = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
   const courses = await Course.find({
+    isPublished: true,
     $or: [{ title: regex }, { description: regex }],
   })
     .select('_id title thumbnail ratingAvg ratingCount')
@@ -90,6 +91,7 @@ router.get('/search', async (req, res) => {
       const searchTerm = topic || q
       const regex = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
       const courses = await Course.find({
+        isPublished: true,
         $or: [{ title: regex }, { description: regex }],
       })
         .select('_id title thumbnail ratingAvg ratingCount')
