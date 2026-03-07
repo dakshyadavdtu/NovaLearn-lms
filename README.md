@@ -11,6 +11,9 @@ A simple learning management system for tutorials and courses.
 - Educators can add, edit, and delete lectures for a course.
 - Lecture videos can be uploaded and updated by educators.
 - Preview lectures can be played; non-preview lectures show as locked.
+- Enroll in courses (payment flow); curriculum unlocks after enrollment. Enrolled courses page lists your courses.
+- Course reviews and ratings (enrolled users only).
+- Profile editing (name, bio, avatar).
 
 ## Run locally
 - backend: `cd backend`, install dependencies, run the dev server
