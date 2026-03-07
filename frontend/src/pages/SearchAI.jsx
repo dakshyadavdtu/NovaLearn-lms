@@ -43,9 +43,14 @@ function SearchAI() {
       </form>
       {loading && <p className="mt-4 text-sm text-slate-600">Searching...</p>}
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-      {results !== null && !loading && (
+      {results !== null && !loading && (() => {
+        const list = Array.isArray(results) ? results : (results?.results ?? [])
+        if (list.length === 0) {
+          return <p className="mt-4 text-sm text-slate-600">No matches.</p>
+        }
+        return (
         <div className="mt-4 space-y-3">
-          {results.map((course) => (
+          {list.map((course) => (
             <Link
               key={course._id}
               to={`/courses/${course._id}`}
@@ -76,7 +81,8 @@ function SearchAI() {
             </Link>
           ))}
         </div>
-      )}
+        )
+      })()}
     </main>
   )
 }
