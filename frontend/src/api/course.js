@@ -37,8 +37,8 @@ export async function updateCourse(id, payload) {
   if (payload.title !== undefined && String(payload.title).trim() !== '') {
     form.append('title', String(payload.title).trim())
   }
-  if (payload.description !== undefined) {
-    form.append('description', String(payload.description))
+  if (payload.description !== undefined && String(payload.description).trim() !== '') {
+    form.append('description', String(payload.description).trim())
   }
   if (typeof payload.isPublished === 'boolean') {
     form.append('isPublished', payload.isPublished)
