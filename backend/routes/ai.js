@@ -68,7 +68,24 @@ router.get('/search', async (req, res) => {
         const results = await fallbackSearch(q)
         return res.json(results)
       }
-      const parsed = JSON.parse(raw)
+      let parsed
+      try {
+        parsed = JSON.parse(raw)
+      } catch {
+        const start = raw.indexOf('{')
+        const end = raw.lastIndexOf('}')
+        if (start !== -1 && end !== -1 && end > start) {
+          try {
+            parsed = JSON.parse(raw.slice(start, end + 1))
+          } catch {
+            const results = await fallbackSearch(q)
+            return res.json(results)
+          }
+        } else {
+          const results = await fallbackSearch(q)
+          return res.json(results)
+        }
+      }
       const topic = typeof parsed?.topic === 'string' ? parsed.topic.trim() : q
       const searchTerm = topic || q
       const regex = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
