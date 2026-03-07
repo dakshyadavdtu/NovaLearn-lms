@@ -27,7 +27,7 @@ function SearchAI() {
   }
 
   useEffect(() => {
-    const initial = searchParams.get('query')
+    const initial = searchParams.get('q')
     if (initial) {
       setQuery(initial)
       runSearch(initial)
@@ -39,7 +39,7 @@ function SearchAI() {
     const q = query.trim()
     if (!q) return
     await runSearch(q)
-    navigate(`/search-ai?query=${encodeURIComponent(q)}`, { replace: true })
+    navigate(`/search-ai?q=${encodeURIComponent(q)}`, { replace: true })
   }
 
   return (
