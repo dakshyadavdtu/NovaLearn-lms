@@ -1,28 +1,45 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { searchAI } from '../api/ai.js'
 
 function SearchAI() {
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [results, setResults] = useState(null)
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    const q = query.trim()
-    if (!q) return
+  async function runSearch(q) {
+    const term = typeof q === 'string' ? q.trim() : ''
+    if (!term) return
     setLoading(true)
     setError(null)
     setResults(null)
     try {
-      const data = await searchAI(q)
+      const data = await searchAI(term)
       setResults(data)
     } catch (err) {
       setError(err.response?.data?.error || 'Search failed')
     } finally {
       setLoading(false)
     }
+  }
+
+  useEffect(() => {
+    const initial = searchParams.get('query')
+    if (initial) {
+      setQuery(initial)
+      runSearch(initial)
+    }
+  }, [])
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    const q = query.trim()
+    if (!q) return
+    await runSearch(q)
+    navigate(`/search-ai?query=${encodeURIComponent(q)}`, { replace: true })
   }
 
   return (
