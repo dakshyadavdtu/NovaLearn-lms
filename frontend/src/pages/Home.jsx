@@ -53,6 +53,9 @@ function Home({ apiBase }) {
       {user ? (
         <div className="flex flex-col items-center gap-2">
           <p className="text-slate-700">Logged in as <span className="font-medium">{user.name}</span></p>
+          <Link to="/search-ai" className="px-4 py-2 bg-slate-600 text-white rounded text-sm">
+            AI Search
+          </Link>
           {user.role === 'educator' && (
             <Link to="/educator" className="px-4 py-2 bg-indigo-600 text-white rounded text-sm">
               Educator Dashboard
@@ -70,7 +73,8 @@ function Home({ apiBase }) {
           </button>
         </div>
       ) : (
-        <div className="flex gap-4">
+        <div className="flex flex-wrap items-center gap-4">
+          <Link to="/search-ai" className="text-slate-800 underline">AI Search</Link>
           <Link to="/login" className="text-slate-800 underline">Log in</Link>
           <Link to="/signup" className="text-slate-800 underline">Sign up</Link>
         </div>

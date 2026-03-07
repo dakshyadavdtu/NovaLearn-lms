@@ -16,6 +16,7 @@ import EditCourse from './pages/educator/EditCourse.jsx'
 import CourseLectures from './pages/educator/CourseLectures.jsx'
 import Profile from './pages/Profile.jsx'
 import EditProfile from './pages/EditProfile.jsx'
+import SearchAI from './pages/SearchAI.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import EducatorRoute from './components/EducatorRoute.jsx'
 import { API_BASE } from './config.js'
@@ -77,6 +78,7 @@ function App() {
           }
         />
         <Route path="/courses/:id" element={<CourseDetails />} />
+        <Route path="/search-ai" element={<SearchAI />} />
         <Route path="/login" element={<EducatorRoute><Login /></EducatorRoute>} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
