@@ -9,7 +9,10 @@ export async function createCourse(req, res) {
       return res.status(400).json({ error: 'Title is required' })
     }
     let thumbnailUrl
-    if (req.file && req.file.buffer) {
+    if (req.file) {
+      if (!req.file.buffer) {
+        return res.status(400).json({ error: 'Invalid thumbnail file' })
+      }
       const result = await uploadImage(req.file.buffer)
       thumbnailUrl = result?.secure_url
     }
@@ -74,7 +77,10 @@ export async function updateCourse(req, res) {
     if (course.creator.toString() !== req.user) {
       return res.status(403).json({ error: 'Not your course' })
     }
-    if (req.file && req.file.buffer) {
+    if (req.file) {
+      if (!req.file.buffer) {
+        return res.status(400).json({ error: 'Invalid thumbnail file' })
+      }
       const result = await uploadImage(req.file.buffer)
       if (result?.secure_url) course.thumbnail = result.secure_url
     }

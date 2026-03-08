@@ -33,7 +33,10 @@ export async function updateProfile(req, res) {
     if (req.body.bio !== undefined) {
       user.bio = String(req.body.bio)
     }
-    if (req.file?.buffer) {
+    if (req.file) {
+      if (!req.file.buffer) {
+        return res.status(400).json({ error: 'Invalid avatar file' })
+      }
       const result = await uploadImage(req.file.buffer, 'lms-avatars')
       if (result?.secure_url) user.avatar = result.secure_url
     }

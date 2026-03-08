@@ -77,7 +77,10 @@ export async function updateLecture(req, res) {
       return res.status(403).json({ error: 'Not your course' })
     }
 
-    if (req.file && req.file.buffer) {
+    if (req.file) {
+      if (!req.file.buffer) {
+        return res.status(400).json({ error: 'Invalid video file' })
+      }
       const result = await uploadVideo(req.file.buffer)
       if (result?.secure_url) {
         lecture.videoURL = result.secure_url
