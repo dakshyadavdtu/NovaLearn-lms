@@ -36,12 +36,20 @@ export default function Profile() {
           {user.bio && (
             <p className="mt-4 text-sm text-slate-700">{user.bio}</p>
           )}
-          <Link
-            to="/profile/edit"
-            className="mt-4 inline-block rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-          >
-            Edit profile
-          </Link>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link
+              to="/profile/edit"
+              className="inline-block rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            >
+              Edit profile
+            </Link>
+            <Link
+              to="/my-courses"
+              className="inline-block rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              My courses
+            </Link>
+          </div>
         </section>
       </div>
     </main>

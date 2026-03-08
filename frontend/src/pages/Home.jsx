@@ -70,6 +70,9 @@ function Home({ apiBase }) {
               Educator Dashboard
             </Link>
           )}
+          <Link to="/my-courses" className="px-4 py-2 bg-slate-600 text-white rounded text-sm">
+            My courses
+          </Link>
           <Link to="/profile" className="px-4 py-2 bg-slate-600 text-white rounded text-sm">
             Profile
           </Link>
@@ -82,7 +85,7 @@ function Home({ apiBase }) {
           </button>
         </div>
       ) : (
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-4">
           <Link to="/search-ai" className="text-slate-800 underline">AI Search</Link>
           <Link to="/login" className="text-slate-800 underline">Log in</Link>
           <Link to="/signup" className="text-slate-800 underline">Sign up</Link>

@@ -33,7 +33,10 @@ export default function EnrolledCourses() {
 
   return (
     <main className="min-h-screen bg-slate-50 p-6">
-      <h1 className="text-xl font-semibold text-slate-900">My Courses</h1>
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-slate-900">My Courses</h1>
+        <Link to="/" className="text-sm text-indigo-600 hover:underline">Home</Link>
+      </div>
       {error && (
         <p className="mt-2 text-sm text-red-600">
           {error}

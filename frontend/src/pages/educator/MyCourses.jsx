@@ -85,6 +85,12 @@ export default function MyCourses() {
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <Link
+                to={`/educator/courses/${c._id}/lectures`}
+                className="text-sm text-slate-600 hover:underline"
+              >
+                Lectures
+              </Link>
+              <Link
                 to={`/educator/courses/${c._id}/edit`}
                 className="text-sm text-indigo-600 hover:underline"
               >
