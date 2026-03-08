@@ -146,11 +146,11 @@ export default function CourseLectures() {
               <p className="mt-2 text-sm text-slate-500">No lectures yet.</p>
             ) : (
               <ul className="mt-3 divide-y divide-slate-100">
-                {lectures.map((lecture) => (
-                  <li key={lecture._id} className="flex items-center justify-between gap-4 py-2">
+                {(Array.isArray(lectures) ? lectures : []).map((lecture, idx) => (
+                  <li key={lecture?._id ?? idx} className="flex items-center justify-between gap-4 py-2">
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-slate-800">
-                        {lecture.title}
+                        {lecture?.title ?? 'Untitled'}
                       </p>
                       {lecture.description && (
                         <p className="mt-0.5 line-clamp-2 text-xs text-slate-500">

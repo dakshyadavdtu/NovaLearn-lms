@@ -46,7 +46,7 @@ export default function EnrolledCourses() {
         {(!courses || courses.length === 0) ? (
           <p className="text-sm text-slate-600">You are not enrolled in any courses yet.</p>
         ) : (
-        (courses || []).map((course) => (
+        (courses || []).filter((course) => course && course._id).map((course) => (
           <Link
             key={course._id}
             to={`/courses/${course._id}`}

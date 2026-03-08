@@ -5,6 +5,13 @@ import { Navigate } from 'react-router-dom'
 export default function Profile() {
   const user = useSelector((state) => state.user?.user)
   if (!user) return <Navigate to="/login" replace />
+  if (!user.avatar) {
+    return (
+      <main className="min-h-screen bg-slate-50 p-6">
+        <p className="text-slate-600">Loading...</p>
+      </main>
+    )
+  }
 
   return (
     <main className="min-h-screen bg-slate-50 p-6">
@@ -24,8 +31,8 @@ export default function Profile() {
               </span>
             )}
             <div>
-              <p className="text-lg font-medium text-slate-900">{user.name}</p>
-              <p className="text-sm text-slate-600">{user.email}</p>
+              <p className="text-lg font-medium text-slate-900">{user?.name ?? ''}</p>
+              <p className="text-sm text-slate-600">{user?.email ?? ''}</p>
               {user.role && (
                 <span className="mt-1 inline-block rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
                   {user.role}

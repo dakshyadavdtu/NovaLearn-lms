@@ -63,7 +63,7 @@ export default function MyCourses() {
         {(courses || []).length === 0 ? (
           <p className="text-slate-600">No courses yet. Create one to get started.</p>
         ) : (
-          (courses || []).map((c) => (
+          (courses || []).filter((c) => c && c._id).map((c) => (
           <div
             key={c._id}
             className="flex gap-4 rounded-lg border border-slate-200 bg-white p-4"
@@ -78,7 +78,7 @@ export default function MyCourses() {
               )}
             </div>
             <div className="min-w-0 flex-1">
-              <h2 className="font-medium text-slate-800">{c.title}</h2>
+              <h2 className="font-medium text-slate-800">{c?.title ?? 'Untitled'}</h2>
               {c.description && (
                 <p className="mt-1 text-sm text-slate-600 line-clamp-1">{c.description}</p>
               )}

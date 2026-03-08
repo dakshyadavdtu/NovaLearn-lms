@@ -130,7 +130,8 @@ export default function CourseDetails() {
     setLecturesError(null)
     Promise.all([getCourseById(id), getLecturesForCourse(id)])
       .then(([courseData, lectureData]) => {
-        setCourse(courseData)
+        const c = courseData?.course ?? courseData
+        setCourse(c || null)
         setLectures(Array.isArray(lectureData) ? lectureData : [])
       })
       .catch((err) => {
@@ -167,7 +168,7 @@ export default function CourseDetails() {
       toast.success('Review submitted')
       await loadReviews()
       const courseData = await getCourseById(id)
-      setCourse(courseData)
+      setCourse(courseData?.course ?? courseData ?? null)
       setReviewComment('')
     } catch (err) {
       toast.error(err.response?.data?.message || err.message || 'Failed to submit review')
@@ -200,8 +201,8 @@ export default function CourseDetails() {
       <div className="mx-auto flex max-w-5xl flex-col gap-6 md:flex-row">
         <section className="flex-1">
           <header className="border-b border-slate-200 pb-4">
-            <h1 className="text-2xl font-semibold text-slate-900">{course.title}</h1>
-            {(course.ratingAvg != null || course.ratingCount > 0) && (
+            <h1 className="text-2xl font-semibold text-slate-900">{course?.title ?? 'Untitled course'}</h1>
+            {(course?.ratingAvg != null || (course?.ratingCount != null && course.ratingCount > 0)) && (
               <p className="mt-1 text-sm text-slate-600">
                 {course.ratingAvg != null ? `${Number(course.ratingAvg).toFixed(1)} ★` : ''}
                 {course.ratingCount != null && course.ratingCount > 0
@@ -209,7 +210,7 @@ export default function CourseDetails() {
                   : ''}
               </p>
             )}
-            {course.description && (
+            {course?.description && (
               <p className="mt-2 text-sm text-slate-700">{course.description}</p>
             )}
           </header>
@@ -223,13 +224,13 @@ export default function CourseDetails() {
                 {lecturesError}
               </p>
             )}
-            {lectures.length === 0 ? (
+            {!Array.isArray(lectures) || lectures.length === 0 ? (
               <p className="mt-2 text-sm text-slate-500">No lectures available yet.</p>
             ) : (
               <ul className="mt-3 divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
                 {lectures.map((lecture, index) => (
                   <li
-                    key={lecture._id}
+                    key={lecture?._id ?? index}
                     className="flex items-center justify-between gap-4 px-4 py-3 text-sm"
                   >
                     <div className="min-w-0 flex-1">
@@ -237,7 +238,7 @@ export default function CourseDetails() {
                         <span className="mr-2 text-xs text-slate-400">
                           {index + 1 < 10 ? `0${index + 1}` : index + 1}
                         </span>
-                        {lecture.title}
+                        {lecture?.title ?? 'Untitled'}
                       </p>
                       {lecture.description && (
                         <p className="mt-0.5 line-clamp-2 text-xs text-slate-500">
@@ -319,14 +320,14 @@ export default function CourseDetails() {
             {reviewsError && (
               <p className="mt-2 text-sm text-red-600">{reviewsError}</p>
             )}
-            {!reviewsLoading && !reviewsError && (course.ratingCount == null || course.ratingCount === 0) && (
+            {!reviewsLoading && !reviewsError && (course?.ratingCount == null || course?.ratingCount === 0) && reviews.length === 0 && (
               <p className="mt-2 text-sm text-slate-500">No reviews yet.</p>
             )}
-            {!reviewsLoading && !reviewsError && reviews.length > 0 && (
+            {!reviewsLoading && !reviewsError && Array.isArray(reviews) && reviews.length > 0 && (
               <ul className="mt-3 space-y-3">
                 {reviews.map((review) => (
                   <li
-                    key={review._id}
+                    key={review?._id ?? review?.userId?._id ?? Math.random()}
                     className="rounded-lg border border-slate-200 bg-white p-3 text-sm"
                   >
                     <div className="flex items-center gap-2">

@@ -70,7 +70,7 @@ function SearchAI() {
         }
         return (
         <div className="mt-4 space-y-3">
-          {list.map((course) => (
+          {list.filter((course) => course && course._id).map((course) => (
             <Link
               key={course._id}
               to={`/courses/${course._id}`}
