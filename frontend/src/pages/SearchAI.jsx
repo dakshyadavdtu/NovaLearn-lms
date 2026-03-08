@@ -61,8 +61,11 @@ function SearchAI() {
         </button>
         <p className="text-xs text-slate-500">Try: &quot;python beginner course under 500&quot;</p>
       </form>
-      {loading && <p className="mt-4 text-sm text-slate-600">Searching...</p>}
+      {loading && <p className="mt-4 text-sm text-slate-600">Loading...</p>}
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+      {results === null && !loading && !error && (
+        <p className="mt-4 text-sm text-slate-500">Search to find courses.</p>
+      )}
       {results !== null && !loading && (() => {
         const list = Array.isArray(results) ? results : (results?.results ?? [])
         if (list.length === 0) {

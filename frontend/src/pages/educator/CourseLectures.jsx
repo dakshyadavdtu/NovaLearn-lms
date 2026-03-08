@@ -34,6 +34,15 @@ export default function CourseLectures() {
       .finally(() => setLoading(false))
   }, [courseId])
 
+  if (!courseId) {
+    return (
+      <main className="min-h-screen bg-slate-50 p-6">
+        <p className="text-slate-600">Loading...</p>
+        <Link to="/educator/courses" className="mt-2 inline-block text-sm text-indigo-600 hover:underline">Back to My Courses</Link>
+      </main>
+    )
+  }
+
   async function handleCreate(e) {
     e.preventDefault()
     if (!courseId || !title.trim()) return
