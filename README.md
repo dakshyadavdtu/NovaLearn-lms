@@ -30,3 +30,6 @@ The password reset flow uses email OTPs. To send emails in non-dev setups, confi
 Both `frontend/` and `backend/` include a `.env.example` file for local configuration.
 Copy these to `.env` in each folder and tweak values as needed.
 You can usually keep the default local URLs and just adjust `DB_URI` if your Mongo setup differs. AI search uses an optional API key if configured in the backend env.
+
+## Deployment notes
+Set env vars on your hosting platform for both backend and frontend. Backend: `PORT`, `FRONTEND_URL` (your deployed frontend URL), `DB_URI`, `JWT_SECRET`. Optional: Cloudinary vars for uploads, SMTP vars for password-reset email, Razorpay keys for payments, `AI_API_KEY` for AI search. Set `NODE_ENV=production` so cookies use secure flags and CORS uses your frontend URL. Frontend: set `VITE_API_URL` to your deployed backend URL, then run `npm run build` and serve the `dist/` output.
