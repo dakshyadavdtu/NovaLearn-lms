@@ -24,6 +24,18 @@ export async function createCourse(req, res) {
   }
 }
 
+export async function getPublishedCourses(req, res) {
+  try {
+    const courses = await Course.find({ isPublished: true })
+      .select('_id title description thumbnail ratingAvg ratingCount')
+      .sort({ updatedAt: -1 })
+      .lean()
+    return res.json({ ok: true, courses })
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to list courses' })
+  }
+}
+
 export async function getMyCourses(req, res) {
   try {
     const courses = await Course.find({ creator: req.user }).sort({ updatedAt: -1 })

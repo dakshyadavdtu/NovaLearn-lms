@@ -8,7 +8,7 @@ import userRouter from './routes/user.js'
 import courseRouter from './routes/course.js'
 import lectureRouter from './routes/lecture.js'
 import paymentRouter from './routes/payment.js'
-import reviewRouter from './routes/review.js'
+import reviewRouter from './routes/reviews.js'
 import aiRouter from './routes/ai.js'
 
 dotenv.config()

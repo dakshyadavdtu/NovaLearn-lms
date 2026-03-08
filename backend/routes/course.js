@@ -4,6 +4,7 @@ import { educatorOnly } from '../middlewares/educator.js'
 import { uploadSingle } from '../middlewares/upload.js'
 import {
   createCourse,
+  getPublishedCourses,
   getMyCourses,
   getCourseById,
   updateCourse,
@@ -16,6 +17,7 @@ import {
 
 const router = Router()
 
+router.get('/published', getPublishedCourses)
 router.post('/', authMiddleware, educatorOnly, uploadSingle, createCourse)
 router.get('/mine', authMiddleware, educatorOnly, getMyCourses)
 router.post('/:courseId/lectures', authMiddleware, educatorOnly, createLecture)
