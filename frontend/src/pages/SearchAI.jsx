@@ -68,12 +68,14 @@ function SearchAI() {
       )}
       {results !== null && !loading && (() => {
         const list = Array.isArray(results) ? results : (results?.results ?? [])
-        if (list.length === 0) {
+        const safeList = list.filter((course) => course && course._id)
+        if (safeList.length === 0) {
           return <p className="mt-4 text-sm text-slate-600">No matches.</p>
         }
         return (
         <div className="mt-4 space-y-3">
-          {list.filter((course) => course && course._id).map((course) => (
+          <p className="text-sm text-slate-500">{safeList.length} course{safeList.length !== 1 ? 's' : ''} found.</p>
+          {safeList.map((course) => (
             <Link
               key={course._id}
               to={`/courses/${course._id}`}
