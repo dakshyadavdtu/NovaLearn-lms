@@ -140,11 +140,8 @@ export async function verifyPayment(req, res) {
     }
 
     order.paymentStatus = 'paid'
-
-    if (providerPaymentId) {
-      order.providerPaymentId = providerPaymentId
-      await order.save()
-    }
+    if (providerPaymentId) order.providerPaymentId = providerPaymentId
+    await order.save()
 
     const user = await User.findById(order.userId).select('enrolledCourses')
     if (!user) {
