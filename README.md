@@ -1,6 +1,9 @@
 # LMS
 A simple learning management system for tutorials and courses.
 
+## Live Demo
+https://novalearn-ejzh.onrender.com
+
 ## Structure
 - frontend/ - React app
 - backend/ - Express API
