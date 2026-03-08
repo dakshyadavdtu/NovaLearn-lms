@@ -103,13 +103,18 @@ export default function CourseDetails() {
             }
 
       await verifyPayment(verifyPayload)
+      const existingIds = Array.isArray(authUser?.enrolledCourses) ? authUser.enrolledCourses : []
+      const alreadyHas = existingIds.some((cid) => String(cid) === String(id))
+      if (authUser && !alreadyHas) {
+        dispatch(setUser({ ...authUser, enrolledCourses: [...existingIds, id] }))
+      }
       try {
         const me = await getMe()
         if (me?.user) {
           dispatch(setUser(me.user))
         }
       } catch {
-        // best-effort user refresh
+        // best-effort user refresh; optimistic update already applied
       }
       toast.success('Payment verified. You can now access the course.')
     } catch (err) {
