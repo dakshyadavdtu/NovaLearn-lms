@@ -44,7 +44,7 @@ export async function signup(req, res) {
     const user = await User.create({ name, email, password })
     const token = signToken(user._id.toString())
     res.cookie(COOKIE_NAME, token, cookieOptions)
-    return res.status(201).json({ user: toSafeUser(user) })
+    return res.status(201).json({ ok: true, user: toSafeUser(user) })
   } catch (err) {
     return res.status(500).json({ error: 'Signup failed' })
   }
@@ -66,7 +66,7 @@ export async function login(req, res) {
     }
     const token = signToken(user._id.toString())
     res.cookie(COOKIE_NAME, token, cookieOptions)
-    return res.json({ user: toSafeUser(user) })
+    return res.json({ ok: true, user: toSafeUser(user) })
   } catch (err) {
     return res.status(500).json({ error: 'Login failed' })
   }

@@ -18,7 +18,7 @@ export async function createCourse(req, res) {
       creator: req.user,
       ...(thumbnailUrl && { thumbnail: thumbnailUrl }),
     })
-    return res.status(201).json(course)
+    return res.status(201).json({ ok: true, course })
   } catch (err) {
     return res.status(500).json({ error: 'Failed to create course' })
   }
@@ -27,7 +27,7 @@ export async function createCourse(req, res) {
 export async function getMyCourses(req, res) {
   try {
     const courses = await Course.find({ creator: req.user }).sort({ updatedAt: -1 })
-    return res.json(courses)
+    return res.json({ ok: true, courses })
   } catch (err) {
     return res.status(500).json({ error: 'Failed to get courses' })
   }
@@ -69,7 +69,7 @@ export async function updateCourse(req, res) {
       course.isPublished = isPublished === true || isPublished === 'true'
     }
     await course.save()
-    return res.json(course)
+    return res.json({ ok: true, course })
   } catch (err) {
     return res.status(500).json({ error: 'Failed to update course' })
   }

@@ -13,7 +13,7 @@ export async function getMe(req, res) {
   try {
     const user = await User.findById(req.user)
     if (!user) return res.status(404).json({ error: 'User not found' })
-    return res.json({ user: toSafeUser(user) })
+    return res.json({ ok: true, user: toSafeUser(user) })
   } catch (err) {
     return res.status(500).json({ error: 'Failed to get user' })
   }
@@ -38,7 +38,7 @@ export async function updateProfile(req, res) {
       if (result?.secure_url) user.avatar = result.secure_url
     }
     await user.save()
-    return res.json({ user: toSafeUser(user) })
+    return res.json({ ok: true, user: toSafeUser(user) })
   } catch (err) {
     return res.status(500).json({ error: 'Failed to update profile' })
   }
@@ -64,7 +64,7 @@ export async function getEnrolledCourses(req, res) {
           }
         }).filter(Boolean)
       : []
-    return res.json({ courses })
+    return res.json({ ok: true, courses })
   } catch (err) {
     return res.status(500).json({ error: 'Failed to get enrolled courses' })
   }

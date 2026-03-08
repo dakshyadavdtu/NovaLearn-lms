@@ -29,7 +29,7 @@ export async function createLecture(req, res) {
     course.lectures.push(lecture._id)
     await course.save()
 
-    return res.status(201).json(lecture)
+    return res.status(201).json({ ok: true, lecture })
   } catch (err) {
     return res.status(500).json({ error: 'Failed to create lecture' })
   }
@@ -88,7 +88,7 @@ export async function updateLecture(req, res) {
 
     await lecture.save()
 
-    return res.json(lecture)
+    return res.json({ ok: true, lecture })
   } catch (err) {
     return res.status(500).json({ error: 'Failed to update lecture' })
   }
