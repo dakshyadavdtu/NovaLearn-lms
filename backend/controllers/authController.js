@@ -11,6 +11,7 @@ const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000 // 7 days
 const isProd = process.env.NODE_ENV === 'production'
 const cookieOptions = {
   httpOnly: true,
+  path: '/',
   maxAge: COOKIE_MAX_AGE,
   secure: isProd,
   sameSite: isProd ? 'none' : 'lax',
