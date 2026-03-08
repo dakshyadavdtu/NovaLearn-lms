@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import Lecture from '../models/Lecture.js'
 import Course from '../models/Course.js'
 import { uploadVideo } from '../utils/cloudinary.js'
@@ -7,6 +8,9 @@ export async function createLecture(req, res) {
     const { courseId } = req.params
     const { title, description, isPreviewFree } = req.body
 
+    if (!mongoose.isValidObjectId(courseId)) {
+      return res.status(400).json({ error: 'Invalid course id' })
+    }
     if (!title || typeof title !== 'string' || !title.trim()) {
       return res.status(400).json({ error: 'Title is required' })
     }
@@ -38,7 +42,9 @@ export async function createLecture(req, res) {
 export async function getCourseLectures(req, res) {
   try {
     const { courseId } = req.params
-
+    if (!mongoose.isValidObjectId(courseId)) {
+      return res.status(400).json({ error: 'Invalid course id' })
+    }
     const course = await Course.findById(courseId)
     if (!course) {
       return res.status(404).json({ error: 'Course not found' })
@@ -55,7 +61,9 @@ export async function updateLecture(req, res) {
   try {
     const { lectureId } = req.params
     const { title, description, isPreviewFree } = req.body
-
+    if (!mongoose.isValidObjectId(lectureId)) {
+      return res.status(400).json({ error: 'Invalid lecture id' })
+    }
     const lecture = await Lecture.findById(lectureId)
     if (!lecture) {
       return res.status(404).json({ error: 'Lecture not found' })
@@ -97,7 +105,9 @@ export async function updateLecture(req, res) {
 export async function deleteLecture(req, res) {
   try {
     const { lectureId } = req.params
-
+    if (!mongoose.isValidObjectId(lectureId)) {
+      return res.status(400).json({ error: 'Invalid lecture id' })
+    }
     const lecture = await Lecture.findById(lectureId)
     if (!lecture) {
       return res.status(404).json({ error: 'Lecture not found' })

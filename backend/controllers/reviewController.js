@@ -10,6 +10,9 @@ export async function addReview(req, res) {
     if (!courseId) {
       return res.status(400).json({ ok: false, message: 'courseId is required' })
     }
+    if (!mongoose.isValidObjectId(courseId)) {
+      return res.status(400).json({ ok: false, message: 'Invalid course id' })
+    }
     if (!Number.isInteger(numRating) || numRating < 1 || numRating > 5) {
       return res.status(400).json({ ok: false, message: 'rating must be between 1 and 5' })
     }

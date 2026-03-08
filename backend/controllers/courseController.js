@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import Course from '../models/Course.js'
 import { uploadImage } from '../utils/cloudinary.js'
 
@@ -47,6 +48,9 @@ export async function getMyCourses(req, res) {
 
 export async function getCourseById(req, res) {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid course id' })
+    }
     const course = await Course.findById(req.params.id).populate('creator', 'name email')
     if (!course) {
       return res.status(404).json({ error: 'Course not found' })
@@ -59,6 +63,9 @@ export async function getCourseById(req, res) {
 
 export async function updateCourse(req, res) {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid course id' })
+    }
     const { title, description, isPublished } = req.body
     const course = await Course.findById(req.params.id)
     if (!course) {
@@ -89,6 +96,9 @@ export async function updateCourse(req, res) {
 
 export async function deleteCourse(req, res) {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid course id' })
+    }
     const course = await Course.findById(req.params.id)
     if (!course) {
       return res.status(404).json({ error: 'Course not found' })
