@@ -172,8 +172,11 @@ export default function CourseDetails() {
       await addReview({ courseId: id, rating: reviewRating, comment: reviewComment })
       toast.success('Review submitted')
       await loadReviews()
-      const courseData = await getCourseById(id)
-      setCourse(courseData?.course ?? courseData ?? null)
+      setTimeout(() => {
+        getCourseById(course?._id ?? id).then((courseData) => {
+          setCourse(courseData?.course ?? courseData ?? null)
+        }).catch(() => {})
+      }, 200)
       setReviewComment('')
     } catch (err) {
       toast.error(err.response?.data?.message || err.message || 'Failed to submit review')
