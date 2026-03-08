@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { getCourseById, updateCourse } from '../../api/course.js'
+import { getCourseById, updateCourse } from '../../api/courses.js'
 
 export default function EditCourse() {
   const { id } = useParams()

@@ -44,7 +44,10 @@ function SearchAI() {
 
   return (
     <main className="min-h-screen p-6 bg-slate-100">
-      <h1 className="text-xl font-semibold text-slate-900 mb-4">AI Search</h1>
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-slate-900">AI Search</h1>
+        <Link to="/" className="text-sm text-indigo-600 hover:underline">Home</Link>
+      </div>
       <form onSubmit={handleSubmit} className="flex flex-col gap-2 max-w-md">
         <input
           type="text"
