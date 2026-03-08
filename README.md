@@ -14,6 +14,7 @@ A simple learning management system for tutorials and courses.
 - Enroll in courses (payment flow); curriculum unlocks after enrollment. Enrolled courses page lists your courses.
 - Course reviews and ratings (enrolled users only).
 - Profile editing (name, bio, avatar).
+- AI-assisted course search; falls back to text search when no API key is set.
 
 ## Run locally
 - backend: `cd backend`, install dependencies, run the dev server
@@ -28,4 +29,4 @@ The password reset flow uses email OTPs. To send emails in non-dev setups, confi
 ## Env
 Both `frontend/` and `backend/` include a `.env.example` file for local configuration.
 Copy these to `.env` in each folder and tweak values as needed.
-You can usually keep the default local URLs and just adjust `DB_URI` if your Mongo setup differs.
+You can usually keep the default local URLs and just adjust `DB_URI` if your Mongo setup differs. AI search uses an optional API key if configured in the backend env.
